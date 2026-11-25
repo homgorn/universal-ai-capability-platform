@@ -1,10 +1,11 @@
 // Sync generated wiki content into the Astro site.
-import { cpSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+// Run from the site/ directory (cwd) to avoid non-ASCII path issues.
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
-const root = resolve(import.meta.dirname, '..', '..');
-mkdirSync(resolve(root, 'site/src/content/topics'), { recursive: true });
-cpSync(resolve(root, 'wiki/pages'), resolve(root, 'site/src/content/topics'), { recursive: true, force: true });
-cpSync(resolve(root, 'wiki/llms.txt'), resolve(root, 'site/public/llms.txt'));
-cpSync(resolve(root, 'wiki/llms-full.txt'), resolve(root, 'site/public/llms-full.txt'));
+mkdirSync('src/content/topics', { recursive: true });
+cpSync('../wiki/pages', 'src/content/topics', { recursive: true, force: true });
+const llms = readFileSync('../wiki/llms.txt', 'utf8');
+writeFileSync('public/llms.txt', llms);
+const full = readFileSync('../wiki/llms-full.txt', 'utf8');
+writeFileSync('public/llms-full.txt', full);
 console.log('wiki synced into site/');
