@@ -71,6 +71,12 @@ site/                                        Astro SEO site (Cloudflare Workers)
 - [Specification](universal-ai-capability-platform-specs-v1/universal-ai-capability-platform-specs-v1/docs/SPECS.md)
 - [Constitution](.specify/memory/constitution.md)
 
+## Deployment
+
+The site is connected to Cloudflare Workers Builds via MCP: pushes to `main` run
+`npm install && npm run sync:wiki && npm run health && npx wrangler deploy` from `site/`
+using a Cloudflare build token. No GitHub Actions token is required.
+
 ## Method
 
 Built with [GitHub Spec Kit](https://github.com/github/spec-kit): constitution → specify → plan → tasks → analyze → implement. Every feature has a spec, plan, tasks and tests.
