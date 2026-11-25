@@ -40,8 +40,9 @@ python -m pip install -e ".[dev]"
 set PYTHONPATH=src          # Windows: $env:PYTHONPATH='src'
 python -m uaicp.seed
 
-# Verify everything
+# Verify everything (backend and site)
 python scripts/health.py
+cd ../site && npm run health
 
 # API
 uvicorn uaicp.api.main:app --reload
@@ -57,8 +58,10 @@ universal-ai-capability-platform-specs-v1/  source specification package
 specs/001-knowledge-foundation/              wiki + store + knowledge graph
 specs/002-contract-validation/               ports, compatibility, error taxonomy, CLI
 specs/003-execution-gateway/                 state machine, idempotency, retries, fallback
-backend/src/uaicp/                           implementation (domain, db, graph, wiki, api, validation, execution)
+specs/004-hf-ingestion/                      HF discovery, snapshots, contracts, SSRF
+backend/src/uaicp/                           implementation (domain, db, graph, wiki, api, validation, execution, ingestion)
 wiki/                                        generated LLM-readable knowledge base
+site/                                        Astro SEO site (Cloudflare Workers)
 ```
 
 ## Documentation

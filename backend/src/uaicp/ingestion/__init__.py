@@ -1,0 +1,1 @@
+"""Ingestion layer: HF adapter, contract extraction, dead-letter/SSRF guards."""
