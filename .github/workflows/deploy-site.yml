@@ -1,12 +1,11 @@
 name: Deploy site to Cloudflare Workers
 
+# NOTE: manual dispatch until a proper token is stored in CLOUDFLARE_API_TOKEN.
+# Required token: Cloudflare API token for account e371aed2f8466508f507960f6838aeb1
+# with "Workers Script:Edit" + "Workers Assets:Edit" (template: Edit Cloudflare Workers).
+# The current token lacks access to the existing Worker 'uacp-site'.
+
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'site/**'
-      - 'wiki/**'
-      - '.github/workflows/deploy-site.yml'
   workflow_dispatch:
 
 jobs:
@@ -18,8 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: site/package-lock.json
 
       - name: Install
         working-directory: site
