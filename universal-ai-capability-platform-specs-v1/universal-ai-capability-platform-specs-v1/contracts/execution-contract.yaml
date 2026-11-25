@@ -1,0 +1,16 @@
+version: 1
+name: execution-contract
+required: [execution_id, tenant_id, target, inputs, policy, idempotency_key]
+properties:
+  execution_id: string
+  tenant_id: string
+  target:
+    one_of: [tool_id, recipe_id]
+  inputs: object
+  output_constraints: object
+  policy:
+    max_cost: number
+    max_duration_ms: integer
+    max_attempts: integer
+  idempotency_key: string
+  trace_id: string

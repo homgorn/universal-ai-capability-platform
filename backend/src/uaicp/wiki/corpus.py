@@ -1,0 +1,450 @@
+"""Knowledge corpus for the LLM wiki.
+
+Answer-first, fact-dense, bilingual (EN canonical, RU mirrored). Every topic
+carries sources and VERIFY items instead of invented facts (constitution IV).
+"""
+
+from __future__ import annotations
+
+TOPICS: list[dict] = [
+    {
+        "slug": "overview",
+        "title_en": "Universal AI Capability Platform",
+        "title_ru": "Универсальная платформа AI-возможностей",
+        "answer_en": (
+            "The Universal AI Capability Platform is a provider-neutral capability registry, "
+            "evaluator, router, execution runtime and composition layer over heterogeneous AI "
+            "resources (HF Spaces/Models, inference providers, REST/OpenAPI services, MCP tools, "
+            "A2A agents, internal services). The canonical unit is Capability + Contract, not an "
+            "iframe. Core flow: Discovery to Registry to Contract to Evaluation to Policy to "
+            "Routing to Execution to Composition to Deployment."
+        ),
+        "answer_ru": (
+            "Универсальная платформа AI-возможностей — провайдер-нейтральный реестр возможностей, "
+            "оценщик, роутер, runtime исполнения и слой композиции над разнородными AI-ресурсами "
+            "(HF Spaces/Models, inference-провайдеры, REST/OpenAPI, MCP-инструменты, A2A-агенты, "
+            "внутренние сервисы). Каноническая единица — Capability + Contract, а не iframe. "
+            "Поток: Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → "
+            "Composition → Deployment."
+        ),
+        "bullets": [
+            ("Canonical unit", "Capability + Contract"),
+            ("Product chain", "Tool → Capability → Recipe → App → Channel Deployment → Product"),
+            ("First source/adapter", "Hugging Face (never the product boundary)"),
+        ],
+        "table": {
+            "headers": ["Layer", "Responsibility"],
+            "rows": [
+                ["Registry", "Provider-neutral capability + contract catalog"],
+                ["Evaluation", "Quality, reliability, latency, cost, safety evidence"],
+                ["Routing", "Capability Router then Provider Router"],
+                ["Execution", "Durable, idempotent, cancellable runtime"],
+                ["Composition", "Typed DAG recipes + transformers"],
+                ["Deployment", "Apps to channels/tenants"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §0", "adr/ADR-001.md"],
+        "verify": [],
+    },
+    {
+        "slug": "domain-model",
+        "title_en": "Domain Model",
+        "title_ru": "Доменная модель",
+        "answer_en": (
+            "The domain separates 15 entities so that no single descriptor is overloaded: Provider, "
+            "Resource, Interface, Operation, Tool, Capability, Contract, Evaluation, Health, Policy, "
+            "Provenance, Execution, Artifact, Recipe, App, Deployment. Tool is an executable "
+            "implementation; Capability is a normalized semantic function; Resource type and "
+            "Interface type are independent."
+        ),
+        "answer_ru": (
+            "Домен разделяет 15 сущностей, чтобы ни один дескриптор не был перегружен: Provider, "
+            "Resource, Interface, Operation, Tool, Capability, Contract, Evaluation, Health, Policy, "
+            "Provenance, Execution, Artifact, Recipe, App, Deployment. Tool — исполняемая "
+            "реализация; Capability — нормализованная семантическая функция; тип Resource и тип "
+            "Interface независимы."
+        ),
+        "bullets": [
+            ("Tool != Capability", "many tools can implement one capability"),
+            ("Resource != Interface", "a Model may expose REST/SDK/MCP; a Space may expose UI + Gradio API"),
+            ("Capability ID format", "<domain>.<function>, e.g. image.background_remove"),
+        ],
+        "table": {
+            "headers": ["Entity", "Meaning"],
+            "rows": [
+                ["Provider", "Organization/system exposing resources or execution"],
+                ["Resource", "MODEL, SPACE, API_SERVICE, MCP_SERVER, AGENT_SERVICE, DATASET, REPOSITORY"],
+                ["Interface", "HTTP_REST, OPENAPI, GRADIO, MCP, A2A, SDK, EMBED, WEBHOOK, CLI"],
+                ["Operation", "Callable action, e.g. generate, transcribe, remove_background"],
+                ["Tool", "Executable implementation of an operation"],
+                ["Capability", "Stable semantic function, e.g. image.upscale"],
+                ["Contract", "Machine-readable input/output constraints"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §2", "docs/SPECS.md §3"],
+        "verify": [],
+    },
+    {
+        "slug": "contracts",
+        "title_en": "Contract Architecture",
+        "title_ru": "Архитектура контрактов",
+        "answer_en": (
+            "A Contract is a machine-readable set of input/output constraints. Provider-native "
+            "schemas are never discarded; they are stored as immutable provenance snapshots. "
+            "Compatibility checks transport, semantic type, schema, cardinality, required metadata, "
+            "dimensions/duration, language and size limits, not only MIME. Errors use a fixed "
+            "taxonomy with code, message, retryable, stage and details."
+        ),
+        "answer_ru": (
+            "Контракт — машиночитаемый набор ограничений входа/выхода. Родные схемы провайдеров не "
+            "отбрасываются, а хранятся как неизменяемые снимки провенанса. Совместимость проверяет "
+            "транспорт, семантический тип, схему, кардинальность, обязательные метаданные, размеры/"
+            "длительность, язык и лимиты размера, а не только MIME. Ошибки — фиксированная "
+            "таксономия с code, message, retryable, stage, details."
+        ),
+        "bullets": [
+            ("Canonical input port", "name, required, semantic_type, transport_type, schema, constraints, examples, sensitive, artifact_type"),
+            ("Error taxonomy", "INVALID_INPUT, CONTRACT_MISMATCH, AUTH_REQUIRED, AUTH_FAILED, POLICY_DENIED, RATE_LIMITED, QUOTA_EXCEEDED, PROVIDER_UNAVAILABLE, PROVIDER_TIMEOUT, SCHEMA_DRIFT, ARTIFACT_TOO_LARGE, ARTIFACT_UNSAFE, EXECUTION_CANCELLED, EXECUTION_FAILED, INTERNAL_ERROR"),
+        ],
+        "table": {
+            "headers": ["Check", "Dimension"],
+            "rows": [
+                ["Transport", "HTTP, MCP, A2A, SDK, ..."],
+                ["Semantic type", "image, text, audio, ..."],
+                ["Schema", "JSON Schema"],
+                ["Cardinality", "single vs multiple"],
+                ["Metadata", "language, dimensions, duration"],
+                ["Size limits", "max bytes"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §4", "contracts/capability-contract.yaml"],
+        "verify": [],
+    },
+    {
+        "slug": "routing",
+        "title_en": "Two-Stage Routing",
+        "title_ru": "Двухэтапный роутинг",
+        "answer_en": (
+            "Routing has two stages that are never merged. Stage A, the Capability Router, selects "
+            "implementations satisfying the semantic goal and contract. Stage B, the Provider "
+            "Router, selects the concrete provider/endpoint at runtime. Hard gates run before "
+            "scoring: policy/legal, compatibility, security/trust, auth, channel, availability, "
+            "budget. Ranking uses profiles QUALITY_FIRST, BALANCED, CHEAPEST_VALID, LOW_LATENCY, "
+            "PRIVATE, SELF_HOSTED."
+        ),
+        "answer_ru": (
+            "Роутинг двухэтапный и этапы не сливаются. Этап A — Capability Router выбирает реализации "
+            "по семантической цели и контракту. Этап B — Provider Router выбирает конкретного "
+            "провайдера/эндпоинт в рантайме. До скоринга — жёсткие гейты: policy/legal, "
+            "совместимость, security/trust, auth, канал, доступность, бюджет. Профили: "
+            "QUALITY_FIRST, BALANCED, CHEAPEST_VALID, LOW_LATENCY, PRIVATE, SELF_HOSTED."
+        ),
+        "bullets": [
+            ("Hard gates (7)", "policy/legal, compatibility, security/trust, auth, channel, availability, budget"),
+            ("Decision record", "candidate set, rejection reasons, selected candidate, profile, policy version, timestamp"),
+        ],
+        "table": {
+            "headers": ["Profile", "Optimizes for"],
+            "rows": [
+                ["QUALITY_FIRST", "Empirical quality"],
+                ["BALANCED", "Balanced quality/cost/latency"],
+                ["CHEAPEST_VALID", "Cost efficiency"],
+                ["LOW_LATENCY", "p50/p95 latency"],
+                ["PRIVATE", "Private/self-hosted"],
+                ["SELF_HOSTED", "Self-hosted only"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §8", "adr/ADR-003.md"],
+        "verify": [],
+    },
+    {
+        "slug": "execution",
+        "title_en": "Execution Runtime",
+        "title_ru": "Runtime исполнения",
+        "answer_en": (
+            "Execution is a first-class durable entity. State machine: CREATED → POLICY_CHECK → "
+            "QUEUED → STARTING → RUNNING → STREAMING → SUCCEEDED, with terminals FAILED, CANCELLED, "
+            "EXPIRED, DENIED. Every execution has a durable ID, idempotency key, timeout, "
+            "cancellation, bounded retries, fallback attempts, artifacts, structured events, "
+            "provider correlation ID and trace ID. Only transient errors (429/5xx/timeouts) retry."
+        ),
+        "answer_ru": (
+            "Исполнение — первоклассная долговечная сущность. Конечный автомат: CREATED → "
+            "POLICY_CHECK → QUEUED → STARTING → RUNNING → STREAMING → SUCCEEDED; терминалы — FAILED, "
+            "CANCELLED, EXPIRED, DENIED. У каждого исполнения есть durable ID, ключ идемпотентности, "
+            "таймаут, отмена, ограниченные повторы, fallback-попытки, артефакты, структурные события, "
+            "provider correlation ID и trace ID. Повтор только для транзиентных ошибок (429/5xx/таймаут)."
+        ),
+        "bullets": [
+            ("Idempotency", "duplicate request does not create a duplicate logical execution"),
+            ("Fallback", "separate attempt under the same logical execution, recorded with reason"),
+        ],
+        "table": {
+            "headers": ["State", "Kind"],
+            "rows": [
+                ["CREATED", "initial"],
+                ["POLICY_CHECK", "gate"],
+                ["QUEUED", "waiting"],
+                ["STARTING", "provisioning"],
+                ["RUNNING", "executing"],
+                ["STREAMING", "streaming output"],
+                ["SUCCEEDED", "terminal"],
+                ["FAILED / CANCELLED / EXPIRED / DENIED", "terminal"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §9", "contracts/execution-contract.yaml"],
+        "verify": [],
+    },
+    {
+        "slug": "security-trust",
+        "title_en": "Security and Trust",
+        "title_ru": "Безопасность и доверие",
+        "answer_en": (
+            "Trust tiers are T0 metadata only, T1 schema inspection, T2 sandboxed smoke test, T3 "
+            "controlled production execution, T4 privileged/private connector. A discovered resource "
+            "is not executable by default. Policy decisions are ALLOW, DENY, REQUIRE_APPROVAL, "
+            "ALLOW_WITH_LIMITS. Data classes are PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED. Provider "
+            "secrets never reach browser clients."
+        ),
+        "answer_ru": (
+            "Уровни доверия: T0 — только метаданные, T1 — инспекция схемы, T2 — sandbox smoke-тест, "
+            "T3 — контролируемое production-исполнение, T4 — привилегированный/приватный коннектор. "
+            "Найденный ресурс по умолчанию не исполним. Полис-решения: ALLOW, DENY, REQUIRE_APPROVAL, "
+            "ALLOW_WITH_LIMITS. Классы данных: PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED. Секреты "
+            "провайдеров никогда не попадают в браузер."
+        ),
+        "bullets": [
+            ("Threats", "SSRF, malicious files, arbitrary code, prompt injection, secret exfiltration, data leakage, runaway cost, malicious MCP tools, compromised dependencies, cross-tenant access"),
+            ("Controls", "outbound allowlist, SSRF protection, private-network blocking, secret isolation, short-lived credentials, tenant isolation, file limits, malware scanning, audit log, rate limits, budget limits, human approval"),
+        ],
+        "table": {
+            "headers": ["Tier", "Meaning"],
+            "rows": [
+                ["T0", "Metadata only"],
+                ["T1", "Schema inspection"],
+                ["T2", "Sandboxed smoke test"],
+                ["T3", "Controlled production execution"],
+                ["T4", "Privileged/private connector"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §6"],
+        "verify": [],
+    },
+    {
+        "slug": "provenance-drift",
+        "title_en": "Provenance and Drift",
+        "title_ru": "Провенанс и дрейф",
+        "answer_en": (
+            "Every normalized object stores source, source_url, observed_at, source_revision, "
+            "raw_snapshot, parser_version and normalized_version. A deterministic schema fingerprint "
+            "detects drift; on change the platform creates a drift event, preserves the old contract, "
+            "extracts the new one, classifies compatibility (PATCH_COMPATIBLE, BACKWARD_COMPATIBLE, "
+            "BREAKING, UNKNOWN) and blocks routing if incompatible or unknown. Historical contracts "
+            "are immutable."
+        ),
+        "answer_ru": (
+            "Каждый нормализованный объект хранит source, source_url, observed_at, source_revision, "
+            "raw_snapshot, parser_version, normalized_version. Детерминированный fingerprint схемы "
+            "обнаруживает дрейф; при изменении создаётся drift-событие, старый контракт сохраняется, "
+            "извлекается новый, классифицируется совместимость (PATCH_COMPATIBLE, "
+            "BACKWARD_COMPATIBLE, BREAKING, UNKNOWN) и роутинг блокируется, если несовместимо или "
+            "неизвестно. Исторические контракты неизменяемы."
+        ),
+        "bullets": [
+            ("Evidence marks", "MEASURED / REPORTED (URL + date) / INFERRED"),
+            ("Unknown values", "become VERIFY items, never fabricated facts"),
+        ],
+        "table": {
+            "headers": ["Compatibility", "Meaning"],
+            "rows": [
+                ["PATCH_COMPATIBLE", "Additive, safe"],
+                ["BACKWARD_COMPATIBLE", "Old inputs still valid"],
+                ["BREAKING", "Incompatible; block routing"],
+                ["UNKNOWN", "Treat as unsafe; block routing"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §7", "adr/ADR-002.md"],
+        "verify": [],
+    },
+    {
+        "slug": "composition",
+        "title_en": "Composition and Recipes",
+        "title_ru": "Композиция и рецепты",
+        "answer_en": (
+            "Recipes are typed DAGs; MVP recipes are acyclic. Node types are capability/operation, "
+            "transformer and validator. Transformers include PDF→text, image→OCR text, image→URL, "
+            "audio→transcript, JSON→CSV, resize/crop/format conversion. The planner pipeline is goal → "
+            "output contract → capability search → candidate paths → transformers → graph validation → "
+            "policy → cost/latency estimate → execution plan."
+        ),
+        "answer_ru": (
+            "Рецепты — типизированные DAG; MVP-рецепты ацикличны. Типы узлов: capability/operation, "
+            "transformer, validator. Трансформеры: PDF→text, image→OCR text, image→URL, "
+            "audio→transcript, JSON→CSV, resize/crop/смена формата. Пайплайн планировщика: goal → "
+            "output contract → capability search → candidate paths → transformers → graph validation → "
+            "policy → cost/latency estimate → execution plan."
+        ),
+        "bullets": [
+            ("MVP planner", "may only instantiate approved capabilities and recipes"),
+            ("Recipe validation", "incompatible recipe fails unless a registered transformer exists"),
+        ],
+        "table": {
+            "headers": ["Node type", "Role"],
+            "rows": [
+                ["capability/operation", "Calls a capability"],
+                ["transformer", "Converts between types"],
+                ["validator", "Checks constraints"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §10"],
+        "verify": [],
+    },
+    {
+        "slug": "channels",
+        "title_en": "Channels and Widget Runtime",
+        "title_ru": "Каналы и виджет-runtime",
+        "answer_en": (
+            "Deployment does not depend on direct iframes. Preferred architecture: Browser → Widget "
+            "Runtime → scoped session token → Execution API → routers → provider. Provider credentials "
+            "never reach browser clients. Modes: iframe, Web Component, JS SDK, direct API. Channel "
+            "classes: embedded UI (Web, Telegram Mini App, Discord Embedded App, Teams tab, LINE LIFF) "
+            "and bot-native (Telegram, Slack, WhatsApp, Google Chat, GitHub, Linear)."
+        ),
+        "answer_ru": (
+            "Развёртывание не зависит от прямых iframe. Предпочтительная архитектура: Browser → Widget "
+            "Runtime → scoped session token → Execution API → routers → provider. Учётные данные "
+            "провайдеров не попадают в браузер. Режимы: iframe, Web Component, JS SDK, direct API. "
+            "Классы каналов: встроенный UI (Web, Telegram Mini App, Discord Embedded App, Teams tab, "
+            "LINE LIFF) и бот-нативные (Telegram, Slack, WhatsApp, Google Chat, GitHub, Linear)."
+        ),
+        "bullets": [
+            ("Invariant", "provider secrets never reach browser"),
+            ("SEO", "pages carry real indexable content; widget is the interactive layer"),
+        ],
+        "table": {
+            "headers": ["Mode", "Use"],
+            "rows": [
+                ["iframe", "Embedded widget"],
+                ["Web Component", "Drop-in element"],
+                ["JS SDK", "Custom integration"],
+                ["direct API", "Server-to-server"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §15"],
+        "verify": [],
+    },
+    {
+        "slug": "invariants",
+        "title_en": "Mandatory Invariants",
+        "title_ru": "Обязательные инварианты",
+        "answer_en": (
+            "Eight invariants are non-negotiable: Tool != Capability; Resource != Interface; "
+            "Capability Router != Provider Router; discovered != executable; historical contracts are "
+            "immutable; provider secrets never reach browser; all external execution passes policy; "
+            "every behavior has tests."
+        ),
+        "answer_ru": (
+            "Восемь инвариантов неизменны: Tool ≠ Capability; Resource ≠ Interface; Capability Router "
+            "≠ Provider Router; discovered ≠ executable; исторические контракты неизменяемы; секреты "
+            "провайдеров не попадают в браузер; всё внешнее исполнение проходит policy; у каждого "
+            "поведения есть тесты."
+        ),
+        "bullets": [
+            ("Tool != Capability", "executable implementation vs semantic function"),
+            ("discovered != executable", "trust promotion required"),
+            ("historical contracts immutable", "append-only versions"),
+        ],
+        "table": {
+            "headers": ["#", "Invariant"],
+            "rows": [
+                ["1", "Tool != Capability"],
+                ["2", "Resource != Interface"],
+                ["3", "Capability Router != Provider Router"],
+                ["4", "discovered != executable"],
+                ["5", "historical contracts are immutable"],
+                ["6", "provider secrets never reach browser"],
+                ["7", "all external execution passes policy"],
+                ["8", "every behavior has tests"],
+            ],
+        },
+        "sources": ["AGENTS.md", "docs/SPECS.md §21"],
+        "verify": [],
+    },
+    {
+        "slug": "roadmap",
+        "title_en": "MVP Roadmap",
+        "title_ru": "MVP-дорожная карта",
+        "answer_en": (
+            "Delivery is phased P0–P3. P0: repository discipline, canonical domain, PostgreSQL "
+            "schema/migrations, HF ingestion, Gradio/OpenAPI extraction, contract validation, "
+            "evaluator, execution gateway, artifact storage, web widget. P1: capability search/router, "
+            "health/drift, cost engine, compatibility engine, transformers, recipes, Telegram adapter. "
+            "P2: Replicate/fal adapters, generic OpenAPI, MCP import/export, A2A, document pipeline, "
+            "data connectors. P3: constrained planner, multi-tenant product layer, billing, UI "
+            "synthesis, autonomous discovery."
+        ),
+        "answer_ru": (
+            "Поставка идёт фазами P0–P3. P0: дисциплина репозитория, канонический домен, схема/миграции "
+            "PostgreSQL, HF-ingestion, извлечение Gradio/OpenAPI, валидация контрактов, оценщик, "
+            "execution-шлюз, хранилище артефактов, веб-виджет. P1: поиск/роутер, health/drift, "
+            "стоимостный движок, движок совместимости, трансформеры, рецепты, Telegram-адаптер. P2: "
+            "адаптеры Replicate/fal, generic OpenAPI, MCP import/export, A2A, документный пайплайн, "
+            "дата-коннекторы. P3: ограниченный планировщик, мультитенантный продуктовый слой, биллинг, "
+            "UI-синтез, автономное обнаружение."
+        ),
+        "bullets": [
+            ("Do NOT build initially", "own LLM, vector DB, graph DB, browser engine, Kubernetes, billing, agent swarm"),
+        ],
+        "table": {
+            "headers": ["Phase", "Theme"],
+            "rows": [
+                ["P0", "Foundation + HF ingestion + execution gateway"],
+                ["P1", "Routing + health/drift + cost + recipes"],
+                ["P2", "More adapters + MCP/A2A + connectors"],
+                ["P3", "Planner + multi-tenant + billing + UI synthesis"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §17", "docs/SPECS.md §18"],
+        "verify": [],
+    },
+    {
+        "slug": "verify",
+        "title_en": "VERIFY Items (Unknowns)",
+        "title_ru": "VERIFY-пункты (неизвестное)",
+        "answer_en": (
+            "The following are explicitly unverified and must not be treated as facts: live provider "
+            "inventory and exact API limits; license/redistribution state of each resource; channel "
+            "feasibility per adapter; competitor maturity; provider economics and pricing. Each is a "
+            "VERIFY gate, not an assumption."
+        ),
+        "answer_ru": (
+            "Следующее явно не проверено и не должно считаться фактом: живой инвентарь провайдеров и "
+            "точные лимиты API; лицензии/право на распространение каждого ресурса; совместимость "
+            "каналов по адаптерам; зрелость конкурентов; экономика и цены провайдеров. Каждый пункт — "
+            "VERIFY-гейт, а не допущение."
+        ),
+        "bullets": [
+            ("Provider limits", "exact quotas/rates unverified"),
+            ("Licenses", "public != redistributable"),
+            ("Channel feasibility", "per-adapter constraints untested"),
+            ("Economics", "provider prices never invented"),
+        ],
+        "table": {
+            "headers": ["Item", "Status"],
+            "rows": [
+                ["Live inventory / limits", "VERIFY"],
+                ["License / redistribution", "VERIFY"],
+                ["Channel feasibility", "VERIFY"],
+                ["Provider economics", "VERIFY"],
+            ],
+        },
+        "sources": ["docs/SPECS.md §23"],
+        "verify": [
+            "Live provider inventory and exact API limits",
+            "License and redistribution state per resource",
+            "Channel feasibility per adapter",
+            "Competitor maturity",
+            "Provider economics and pricing",
+        ],
+    },
+]

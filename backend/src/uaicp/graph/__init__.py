@@ -1,0 +1,1 @@
+"""Graph layer: triple extraction, querying, deterministic rebuild."""

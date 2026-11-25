@@ -1,0 +1,11 @@
+version: 1
+name: capability-contract
+required: [capability_id, inputs, outputs]
+properties:
+  capability_id: string
+  inputs:
+    type: array
+    items: {name: string, required: boolean, semantic_type: string, transport_type: string, schema: object}
+  outputs:
+    type: array
+    items: {name: string, semantic_type: string, transport_type: string, schema: object}

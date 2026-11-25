@@ -1,0 +1,36 @@
+# Universal AI Capability Platform
+
+> The Universal AI Capability Platform is a provider-neutral capability registry, evaluator, router, execution runtime and composition layer over heterogeneous AI resources (HF Spaces/Models, inference providers, REST/OpenAPI services, MCP tools, A2A agents, internal services). The canonical unit is Capability + Contract, not an iframe. Core flow: Discovery to Registry to Contract to Evaluation to Policy to Routing to Execution to Composition to Deployment.
+
+**RU:** Универсальная платформа AI-возможностей — провайдер-нейтральный реестр возможностей, оценщик, роутер, runtime исполнения и слой композиции над разнородными AI-ресурсами (HF Spaces/Models, inference-провайдеры, REST/OpenAPI, MCP-инструменты, A2A-агенты, внутренние сервисы). Каноническая единица — Capability + Contract, а не iframe. Поток: Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment.
+
+## Sections
+
+- [Channels and Widget Runtime](pages/channels.md): Deployment does not depend on direct iframes. Preferred architecture: Browser → Widget Runtime → scoped session token →...
+- [Composition and Recipes](pages/composition.md): Recipes are typed DAGs; MVP recipes are acyclic. Node types are capability/operation, transformer and validator. Transfo...
+- [Contract Architecture](pages/contracts.md): A Contract is a machine-readable set of input/output constraints. Provider-native schemas are never discarded; they are...
+- [Domain Model](pages/domain-model.md): The domain separates 15 entities so that no single descriptor is overloaded: Provider, Resource, Interface, Operation, T...
+- [Execution Runtime](pages/execution.md): Execution is a first-class durable entity. State machine: CREATED → POLICY_CHECK → QUEUED → STARTING → RUNNING → STREAMI...
+- [Mandatory Invariants](pages/invariants.md): Eight invariants are non-negotiable: Tool != Capability; Resource != Interface; Capability Router != Provider Router; di...
+- [Provenance and Drift](pages/provenance-drift.md): Every normalized object stores source, source_url, observed_at, source_revision, raw_snapshot, parser_version and normal...
+- [MVP Roadmap](pages/roadmap.md): Delivery is phased P0–P3. P0: repository discipline, canonical domain, PostgreSQL schema/migrations, HF ingestion, Gradi...
+- [Two-Stage Routing](pages/routing.md): Routing has two stages that are never merged. Stage A, the Capability Router, selects implementations satisfying the sem...
+- [Security and Trust](pages/security-trust.md): Trust tiers are T0 metadata only, T1 schema inspection, T2 sandboxed smoke test, T3 controlled production execution, T4...
+- [VERIFY Items (Unknowns)](pages/verify.md): The following are explicitly unverified and must not be treated as facts: live provider inventory and exact API limits;...
+
+## Invariants
+
+- Tool != Capability
+- Resource != Interface
+- Capability Router != Provider Router
+- discovered != executable
+- historical contracts are immutable
+- provider secrets never reach browser
+- all external execution passes policy
+- every behavior has tests
+
+## Evidence
+
+Marks: MEASURED (observed directly), REPORTED (external source, URL + date), INFERRED (derived, surfaced as VERIFY). Unknown values are VERIFY items, never facts.
+
+content_hash: d35601fc58d854295c2900fa4fbb84e648ce3ca90a16af487ff08e0239f085e0

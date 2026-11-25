@@ -1,0 +1,11 @@
+version: 1
+name: artifact-contract
+required: [artifact_id, type, mime, size, hash]
+properties:
+  artifact_id: string
+  type: string
+  mime: string
+  size: integer
+  hash: string
+  storage_uri: string
+  classification: [PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED]
