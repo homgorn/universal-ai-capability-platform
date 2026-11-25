@@ -23,7 +23,7 @@ jobs:
 
       - name: Install
         working-directory: site
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Sync wiki
         working-directory: site
