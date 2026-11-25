@@ -8,6 +8,7 @@ Die Universelle AI-Fähigkeitsplattform ist ein anbieterneutrales Register, Bewe
 
 | Fakt | Wert |
 |------|------|
+| Website | https://uacp-site.rvcdax.workers.dev |
 | Kanonische Einheit | Capability + Contract |
 | Hauptablauf | Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment |
 | Wahrheitsquelle | PostgreSQL (SQLite für lokale Entwicklung) |

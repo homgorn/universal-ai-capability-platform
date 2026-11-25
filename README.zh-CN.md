@@ -8,6 +8,7 @@
 
 | 事实 | 值 |
 |------|-----|
+| Website | https://uacp-site.rvcdax.workers.dev |
 | 规范单元 | Capability + Contract |
 | 核心流程 | Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment |
 | 真实数据源 | PostgreSQL（本地开发用 SQLite） |

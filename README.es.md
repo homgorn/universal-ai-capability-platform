@@ -8,6 +8,7 @@ La Plataforma Universal de Capacidades de IA es un registro, evaluador, enrutado
 
 | Dato | Valor |
 |------|-------|
+| Website | https://uacp-site.rvcdax.workers.dev |
 | Unidad canónica | Capability + Contract |
 | Flujo principal | Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment |
 | Fuente de verdad | PostgreSQL (SQLite para desarrollo local) |

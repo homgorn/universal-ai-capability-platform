@@ -1,0 +1,47 @@
+---
+import { marked } from 'marked';
+import BaseLayout from '../../components/BaseLayout.astro';
+import { LANGS, META, type Lang } from '../../data/i18n';
+import enReadme from '../../../../README.md?raw';
+import ruReadme from '../../../../README.ru.md?raw';
+import zhReadme from '../../../../README.zh-CN.md?raw';
+import esReadme from '../../../../README.es.md?raw';
+import deReadme from '../../../../README.de.md?raw';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const readmes: Record<Lang, string> = {
+  en: enReadme,
+  ru: ruReadme,
+  'zh-cn': zhReadme,
+  es: esReadme,
+  de: deReadme,
+};
+const html = marked.parse(readmes[lang]) as string;
+// Rewrite GitHub-relative links into site routes.
+const linked = html
+  .replaceAll('href="README.md"', 'href="/en/"')
+  .replaceAll('href="README.ru.md"', 'href="/ru/"')
+  .replaceAll('href="README.zh-CN.md"', 'href="/zh-cn/"')
+  .replaceAll('href="README.es.md"', 'href="/es/"')
+  .replaceAll('href="README.de.md"', 'href="/de/"')
+  .replaceAll('href="wiki/llms.txt"', 'href="/llms.txt"')
+  .replaceAll('href="wiki/llms-full.txt"', 'href="/llms-full.txt"')
+  .replaceAll('href="LICENSE"', 'href="https://github.com/homgorn/universal-ai-capability-platform/blob/main/LICENSE"')
+  .replaceAll('href="universal-ai-capability-platform-specs-v1/', 'href="https://github.com/homgorn/universal-ai-capability-platform/blob/main/universal-ai-capability-platform-specs-v1/')
+  .replaceAll('href=".specify/', 'href="https://github.com/homgorn/universal-ai-capability-platform/blob/main/.specify/');
+const alternates: Record<string, string> = Object.fromEntries(
+  LANGS.map((l) => [META[l].htmlLang, `${Astro.site}${l}/`]),
+);
+alternates['x-default'] = `${Astro.site}en/`;
+---
+
+<BaseLayout lang={lang} alternates={alternates}>
+  <article set:html={linked} />
+  <p class="card">
+    <a href={`/${lang}/docs/`}>Documentation topics →</a>
+  </p>
+</BaseLayout>

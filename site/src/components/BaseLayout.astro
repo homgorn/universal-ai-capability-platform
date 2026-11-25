@@ -1,0 +1,93 @@
+---
+import { META, LANGS, type Lang } from '../data/i18n';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  canonical?: string;
+  alternates?: Record<string, string>;
+}
+
+const { lang, title, description, canonical, alternates } = Astro.props;
+const meta = META[lang];
+const pageTitle = title ?? meta.title;
+const pageDesc = description ?? meta.description;
+const canonicalUrl = canonical ?? `${Astro.site}${lang}/`;
+const alternateLinks = alternates ?? Object.fromEntries(
+  LANGS.map((l) => [l, `${Astro.site}${l}/`]),
+);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  name: 'Universal AI Capability Platform',
+  description: pageDesc,
+  url: canonicalUrl,
+  codeRepository: 'https://github.com/homgorn/universal-ai-capability-platform',
+  programmingLanguage: ['Python', 'TypeScript'],
+  license: 'https://opensource.org/licenses/MIT',
+  keywords: meta.keywords,
+  inLanguage: meta.htmlLang,
+};
+---
+
+<!doctype html>
+<html lang={meta.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDesc} />
+    <meta name="keywords" content={meta.keywords} />
+    <link rel="canonical" href={canonicalUrl} />
+    {Object.entries(alternateLinks).map(([code, href]) => (
+      <link rel="alternate" hreflang={code} href={href} />
+    ))}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDesc} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, -apple-system, Segoe UI, sans-serif; line-height: 1.6; }
+      body { margin: 0; padding: 0 1.25rem 4rem; max-width: 860px; margin-inline: auto; }
+      header { padding: 1.25rem 0; border-bottom: 1px solid #8884; margin-bottom: 2rem; }
+      header a { margin-right: .75rem; font-size: .9rem; }
+      header strong { margin-right: 1rem; }
+      nav.langs a { padding: .15rem .35rem; border: 1px solid #8886; border-radius: 4px; text-decoration: none; }
+      nav.langs a[aria-current="page"] { background: #4a90d2; color: #fff; border-color: #4a90d2; }
+      h1 { line-height: 1.2; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #8886; padding: .45rem .6rem; text-align: left; }
+      code { background: #8882; padding: .1rem .3rem; border-radius: 3px; }
+      pre { background: #8882; padding: 1rem; overflow-x: auto; border-radius: 6px; }
+      footer { margin-top: 3rem; border-top: 1px solid #8884; padding-top: 1rem; font-size: .9rem; }
+      .card { border: 1px solid #8886; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>Universal AI Capability Platform</strong>
+      <nav class="langs" aria-label="Languages">
+        {LANGS.map((l) => (
+          <a href={`/${l}/`} hreflang={META[l].htmlLang} aria-current={l === lang ? 'page' : undefined}>
+            {META[l].label}
+          </a>
+        ))}
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>
+        <a href="/llms.txt">llms.txt</a> ·
+        <a href="/llms-full.txt">llms-full.txt</a> ·
+        <a href="/sitemap-index.xml">sitemap</a> ·
+        <a href="https://github.com/homgorn/universal-ai-capability-platform">GitHub</a>
+      </p>
+    </footer>
+  </body>
+</html>

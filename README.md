@@ -9,6 +9,7 @@ The Universal AI Capability Platform is a provider-neutral registry, evaluator, 
 | Fact | Value |
 |------|-------|
 | Canonical unit | Capability + Contract |
+| Website | https://uacp-site.rvcdax.workers.dev |
 | Core flow | Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment |
 | Source of truth | PostgreSQL (SQLite for local dev) |
 | Knowledge graph | Derived triple projection (`kg_entity` + `kg_triple`), ADR-002 |

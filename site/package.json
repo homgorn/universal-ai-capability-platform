@@ -1,0 +1,22 @@
+{
+  "name": "uacp-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/postbuild.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy",
+    "sync:wiki": "node scripts/sync-wiki.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
+    "astro": "^5.16.0",
+    "marked": "^17.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.168.0"
+  }
+}

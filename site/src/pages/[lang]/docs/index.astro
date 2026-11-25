@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../../components/BaseLayout.astro';
+import { META, type Lang } from '../../data/i18n';
+
+const files = import.meta.glob('../../../content/topics/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+export function getStaticPaths() {
+  return (['en', 'ru'] as Lang[]).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const topics = Object.entries(files)
+  .map(([path, content]) => ({
+    slug: path.split('/').pop()!.replace(/\.md$/, ''),
+    title: content.match(/^#\s+(.+)$/m)?.[1] ?? path,
+    answer: content.split('\n').filter((line) => line.trim() && !line.startsWith('#')).slice(0, 1)[0] ?? '',
+  }))
+  .sort((a, b) => a.slug.localeCompare(b.slug));
+const canonical = `${Astro.site}${lang}/docs/`;
+---
+
+<BaseLayout lang={lang} title={`Documentation — Universal AI Capability Platform`} canonical={canonical}>
+  <h1>Documentation topics</h1>
+  <p>Answer-first, fact-dense knowledge base generated from the platform specification.</p>
+  <ul>
+    {topics.map((topic) => (
+      <li>
+        <a href={`/${lang}/docs/${topic.slug}/`}>{topic.title}</a>
+        <p>{topic.answer.slice(0, 220)}</p>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

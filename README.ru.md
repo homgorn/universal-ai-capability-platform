@@ -8,6 +8,7 @@
 
 | Факт | Значение |
 |------|----------|
+| Website | https://uacp-site.rvcdax.workers.dev |
 | Каноническая единица | Capability + Contract |
 | Ядро потока | Discovery → Registry → Contract → Evaluation → Policy → Routing → Execution → Composition → Deployment |
 | Источник истины | PostgreSQL (SQLite для локальной разработки) |
