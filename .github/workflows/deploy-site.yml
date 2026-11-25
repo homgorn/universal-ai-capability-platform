@@ -1,0 +1,42 @@
+name: Deploy site to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'wiki/**'
+      - '.github/workflows/deploy-site.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install
+        working-directory: site
+        run: npm ci
+
+      - name: Sync wiki
+        working-directory: site
+        run: npm run sync:wiki
+
+      - name: Health (build + SEO checks)
+        working-directory: site
+        run: npm run health
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: site
+          command: deploy

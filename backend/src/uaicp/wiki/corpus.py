@@ -425,6 +425,7 @@ TOPICS: list[dict] = [
         ),
         "bullets": [
             ("Provider limits", "exact quotas/rates unverified"),
+            ("Live HF check (measured 2026-11-25)", "3 public gradio spaces discovered via https://huggingface.co/api/spaces; sample revision 51d65d370acde5f1622fd227551c5989573b7798; license and quotas remain VERIFY"),
             ("Licenses", "public != redistributable"),
             ("Channel feasibility", "per-adapter constraints untested"),
             ("Economics", "provider prices never invented"),
