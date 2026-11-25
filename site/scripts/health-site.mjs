@@ -11,6 +11,7 @@ const required = [
   'dist/llms-full.txt',
   'dist/sitemap-index.xml',
   'dist/sitemap-0.xml',
+  'dist/d4f8a9c2e7b14a6b8f0c3d5e7a9b1c24.txt',
   ...['en', 'ru', 'zh-cn', 'es', 'de'].map((l) => `dist/${l}/index.html`),
   'dist/en/docs/overview/index.html',
   'dist/ru/docs/overview/index.html',
@@ -28,6 +29,7 @@ const sitemap = readFileSync(resolve(root, 'dist/sitemap-0.xml'), 'utf8');
 if ((sitemap.match(/hreflang=/g) ?? []).length < 18) failures.push('sitemap hreflang missing');
 
 const en = readFileSync(resolve(root, 'dist/en/index.html'), 'utf8');
+if (!en.includes('static.cloudflareinsights.com/beacon.min.js')) failures.push('Web Analytics beacon missing');
 for (const code of ['en', 'ru', 'zh-CN', 'es', 'de', 'x-default']) {
   if (!en.includes(`hreflang="${code}"`)) failures.push(`HTML hreflang ${code} missing`);
 }

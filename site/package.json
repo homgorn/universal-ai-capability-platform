@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "health": "npm run build && node scripts/health-site.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "deploy": "astro build && wrangler deploy",
     "sync:wiki": "node scripts/sync-wiki.mjs"
   },

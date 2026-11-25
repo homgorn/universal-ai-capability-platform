@@ -77,6 +77,18 @@ The site is connected to Cloudflare Workers Builds via MCP: pushes to `main` run
 `npm install && npm run sync:wiki && npm run health && npx wrangler deploy` from `site/`
 using a Cloudflare build token. No GitHub Actions token is required.
 
+## SEO, indexing and analytics
+
+- **Sitemap + hreflang**: `sitemap-0.xml` lists all localized pages with `xhtml:link` alternates.
+- **IndexNow**: `site/scripts/indexnow.mjs` submits the sitemap URLs to `api.indexnow.org`
+  (Bing, Yandex, Seznam); the verification key lives at `/<key>.txt`. Run `npm run indexnow`
+  after a deploy.
+- **Cloudflare Web Analytics**: privacy-first pageviews (no cookies) via beacon token
+  `16b6276b25da4ff88d31a81396efab81`; dashboard stats are in Cloudflare → Web Analytics.
+- **Cloudflare AI Search**: instance `uacp-site` crawls `sitemap-0.xml` daily and provides a
+  vector+keyword index that can be queried by AI assistants.
+- **Workers Observability**: enabled in `site/wrangler.jsonc` for Worker logs and metrics.
+
 ## Method
 
 Built with [GitHub Spec Kit](https://github.com/github/spec-kit): constitution → specify → plan → tasks → analyze → implement. Every feature has a spec, plan, tasks and tests.
