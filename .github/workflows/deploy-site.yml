@@ -1,10 +1,8 @@
 name: Deploy site to Cloudflare Workers
 
-# NOTE: manual dispatch until a proper token is stored in CLOUDFLARE_API_TOKEN.
-# Required token: Cloudflare API token for account e371aed2f8466508f507960f6838aeb1
-# with "Workers Script:Edit" + "Workers Assets:Edit" (template: Edit Cloudflare Workers).
-# The current token lacks access to the existing Worker 'uacp-site'.
-
+# Legacy manual workflow. Production deploys are handled by Cloudflare Workers
+# Builds (connected via MCP, build_token "ai scraping stack", root_directory site).
+# Keep this only as an emergency manual fallback.
 on:
   workflow_dispatch:
 
