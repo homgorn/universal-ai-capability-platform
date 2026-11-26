@@ -6,6 +6,7 @@
 
 ## Sections
 
+- [HF Catalog Crawler (MVP-1)](pages/catalog-crawler.md): The first active feature is a bounded, resumable crawler of the public Hugging Face Space catalog. It follows the Link r...
 - [Channels and Widget Runtime](pages/channels.md): Deployment does not depend on direct iframes. Preferred architecture: Browser → Widget Runtime → scoped session token →...
 - [Composition and Recipes](pages/composition.md): Recipes are typed DAGs; MVP recipes are acyclic. Node types are capability/operation, transformer and validator. Transfo...
 - [Contract Architecture](pages/contracts.md): A Contract is a machine-readable set of input/output constraints. Provider-native schemas are never discarded; they are...
@@ -33,4 +34,4 @@
 
 Marks: MEASURED (observed directly), REPORTED (external source, URL + date), INFERRED (derived, surfaced as VERIFY). Unknown values are VERIFY items, never facts.
 
-content_hash: f52dfffccfedd754a6fde11596752d3dc0c42a9f1a1c10537039c245ed336c00
+content_hash: 775a3d0c4279c1a78e49d3a70ca23a172e71c7b868332c6a0b22e3a019b785b2

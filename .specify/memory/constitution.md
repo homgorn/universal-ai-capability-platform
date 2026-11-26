@@ -1,8 +1,9 @@
 <!--
 Sync Impact Report
-Version change: (none) → 1.0.0
-Modified principles: none (initial ratification)
-Added sections: Core Principles (7), Development Workflow, Quality Gates, Governance
+Version change: 1.0.0 → 1.1.0
+Modified principles: none (initial ratification in v1.0.0)
+Added sections: Core Principles (7), Development Workflow, Quality Gates, Governance;
+  v1.1.0 adds Principle VIII "Ingestion Before Intelligence" (ADR-004)
 Removed sections: none
 Follow-up TODOs: none
 -->
@@ -78,6 +79,15 @@ RU: Документация пишется answer-first (прямой факт 
 факт-плотно (точные числа, таблицы, списки определений) и со ссылками на первоисточники.
 Публикуются llms.txt и llms-full.txt. Артефакты ведутся двуязычно (RU + EN).
 
+### VIII. Ingestion Before Intelligence
+No planner, ranking, channel or SEO work is justified until a measured catalog exists. Build
+the bounded, resumable ingestion engine first; derive capabilities, contracts, wiki and sites
+from real collected records, never from imagined inventory (ADR-004).
+
+RU: Планировщик, ранжирование, каналы и SEO не оправданы, пока нет измеренного каталога.
+Сначала ограниченный, возобновляемый сбор; затем возможности, контракты, вики и сайт из
+реальных записей, а не из воображаемого инвентаря (ADR-004).
+
 ## Development Workflow
 
 1. Read the relevant spec, schema and ADR before coding (AGENTS.md).
@@ -111,4 +121,4 @@ version bump (MAJOR/MINOR/PATCH), and migration plan. All specs, plans and tasks
 verify compliance. Complexity must be justified in the plan's Complexity Tracking table.
 Runtime development guidance lives in AGENTS.md and the spec package.
 
-**Version**: 1.0.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-25
+**Version**: 1.1.0 | **Ratified**: 2026-11-25 | **Last Amended**: 2026-11-26

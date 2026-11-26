@@ -282,6 +282,42 @@ class ArtifactRef(TenantMixin, Base):
     )
 
 
+class HFSpace(TenantMixin, Base):
+    """Canonical minimal record for a Hugging Face Space (MVP-1)."""
+
+    __tablename__ = "hf_space"
+    id: Mapped[str] = mapped_column(String(255), primary_key=True)
+    author: Mapped[str | None] = mapped_column(String(255))
+    title: Mapped[str | None] = mapped_column(String(512))
+    sdk: Mapped[str | None] = mapped_column(String(64))
+    tags: Mapped[list] = mapped_column(JSONType, default=list)
+    likes: Mapped[int | None] = mapped_column(Integer)
+    trending_score: Mapped[float | None] = mapped_column(Float)
+    runtime: Mapped[dict | None] = mapped_column(JSONType)
+    subdomain: Mapped[str | None] = mapped_column(String(255))
+    sha: Mapped[str | None] = mapped_column(String(128), index=True)
+    created_at_hf: Mapped[str | None] = mapped_column(String(64))
+    last_modified_hf: Mapped[str | None] = mapped_column(String(64))
+    license: Mapped[str | None] = mapped_column(String(128))
+    models: Mapped[list] = mapped_column(JSONType, default=list)
+    datasets: Mapped[list] = mapped_column(JSONType, default=list)
+    source_url: Mapped[str] = mapped_column(String(1024), nullable=False)
+    raw_snapshot: Mapped[dict] = mapped_column(JSONType, nullable=False)
+    snapshot_history: Mapped[list] = mapped_column(JSONType, default=list)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    times_seen: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class IngestCheckpoint(Base):
+    """Resumable cursor state for a crawl source."""
+
+    __tablename__ = "ingest_checkpoint"
+    source: Mapped[str] = mapped_column(String(128), primary_key=True)
+    cursor: Mapped[str | None] = mapped_column(Text)
+    items_seen: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
 class KGEntity(TenantMixin, Base):
     """Graph node (derived projection)."""
 
