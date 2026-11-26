@@ -1,0 +1,1 @@
+"""Tool contract layer: agents.md, Gradio info, MCP schema."""

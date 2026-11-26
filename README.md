@@ -31,7 +31,7 @@ measured.
 ## Roadmap (from the original research)
 
 1. **HF Catalog Crawler** — active now: cursor pagination, checkpoints, SHA-based updates, dead letters.
-2. **Gradio Contract Extractor** — `agents.md` + `/gradio_api/openapi.json` → canonical ports.
+2. **Gradio Contract Extractor** — implemented: `agents.md` + `/gradio_api/info` + MCP schema → canonical ports.
 3. **Evaluator** — schema validity, health, smoke tests, latency, output validity.
 4. **Widget Runtime** — one stable host calling tools dynamically, not 100k third-party iframes.
 5. **Telegram Adapter** — bot commands + Mini App.
@@ -49,6 +49,11 @@ channel adapters before the catalog exists.
 - `/categories/`, `/tags/`, `/sdk/` — indexable hubs with `CollectionPage + ItemList` and breadcrumbs.
 - `/api/items.json`, `/api/index.json`, `/api/stats.json`, `/api/corpus.jsonl`, `/.well-known/ai-catalog.json` — machine-readable catalog for agents.
 - `/llms.txt`, `/llms-full.txt`, `/docs/...` — human and LLM documentation.
+
+Navigation (mega menu, mobile hamburger, 5-column × 2-row footer with 5–7 URLs per group) is
+generated from the catalog by `python scripts/update_site_data.py`. That single script refreshes
+catalog JSON/API, nav, knowledge graph and wiki; run it after every crawl. The catalog shows 24
+cards with "Show more" instead of rendering 501 at once.
 
 Filter combinations are client-side with a self-canonical base URL; only curated single-facet hubs are indexable. FAQPage markup is retired in 2026 — questions are visible text, not schema.
 
