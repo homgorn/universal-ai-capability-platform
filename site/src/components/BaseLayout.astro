@@ -1,5 +1,7 @@
 ---
 import { META, LANGS, type Lang } from '../data/i18n';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
 
 interface Props {
   lang: Lang;
@@ -73,27 +75,10 @@ const jsonLd = {
     </style>
   </head>
   <body>
-    <header>
-      <strong>Universal AI Capability Platform</strong>
-      <a href="/spaces/">Catalog</a>
-      <nav class="langs" aria-label="Languages">
-        {LANGS.map((l) => (
-          <a href={`/${l}/`} hreflang={META[l].htmlLang} aria-current={l === lang ? 'page' : undefined}>
-            {META[l].label}
-          </a>
-        ))}
-      </nav>
-    </header>
+    <Header />
     <main>
       <slot />
     </main>
-    <footer>
-      <p>
-        <a href="/llms.txt">llms.txt</a> ·
-        <a href="/llms-full.txt">llms-full.txt</a> ·
-        <a href="/sitemap-index.xml">sitemap</a> ·
-        <a href="https://github.com/homgorn/universal-ai-capability-platform">GitHub</a>
-      </p>
-    </footer>
+    <Footer />
   </body>
 </html>

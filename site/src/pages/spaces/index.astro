@@ -76,14 +76,18 @@ const itemList = {
       <legend>SDK</legend>
       {sdks.map((s) => <button type="button" data-facet="sdk" data-value={s}>{s}</button>)}
     </fieldset>
-    <fieldset>
-      <legend>License</legend>
-      {licenses.map((l) => <button type="button" data-facet="lic" data-value={l}>{l}</button>)}
-    </fieldset>
-    <fieldset>
-      <legend>Tags</legend>
-      {tags.map((t) => <button type="button" data-facet="tag" data-value={t}>#{t}</button>)}
-    </fieldset>
+    <details>
+      <summary>License</summary>
+      <fieldset>
+        {licenses.map((l) => <button type="button" data-facet="lic" data-value={l}>{l}</button>)}
+      </fieldset>
+    </details>
+    <details>
+      <summary>Tags ({tags.length})</summary>
+      <fieldset>
+        {tags.map((t) => <button type="button" data-facet="tag" data-value={t}>#{t}</button>)}
+      </fieldset>
+    </details>
     <button type="button" id="clear">Clear filters</button>
   </section>
 
@@ -91,9 +95,11 @@ const itemList = {
   <div id="results">
     {items.slice(0, 24).map((item) => <SpaceCard item={item} />)}
   </div>
+  <p><button type="button" id="more">Show more</button></p>
 
   <script is:inline define:vars={{ total: items.length }}>
     const state = { q: '', sort: 'likes', cat: '', sdk: '', lic: '', tag: '' };
+    let visible = 24;
     const params = new URLSearchParams(location.search);
     for (const key of Object.keys(state)) if (params.has(key)) state[key] = params.get(key);
 
@@ -114,7 +120,6 @@ const itemList = {
 
     function render(list) {
       els.results.replaceChildren();
-      els.count.textContent = `Showing ${list.length} of ${total}`;
       for (const item of list) {
         const card = document.createElement('article');
         card.className = 'card';
@@ -154,7 +159,11 @@ const itemList = {
         name: (a, b) => a.title.localeCompare(b.title),
       };
       list = list.sort(sorters[state.sort] || sorters.likes);
-      render(list);
+      const slice = list.slice(0, visible);
+      render(slice);
+      els.count.textContent = `Showing ${slice.length} of ${list.length}`;
+      const more = document.getElementById('more');
+      more.hidden = list.length <= visible;
       syncUrl();
     }
 
@@ -162,17 +171,21 @@ const itemList = {
       btn.addEventListener('click', () => {
         const key = btn.dataset.facet;
         state[key] = state[key] === btn.dataset.value ? '' : btn.dataset.value;
+        visible = 24;
         document.querySelectorAll(`[data-facet="${key}"]`).forEach((b) => {
           b.setAttribute('aria-pressed', String(b.dataset.value === state[key]));
         });
         apply();
       });
     });
-    els.q.addEventListener('input', () => { state.q = els.q.value; apply(); });
-    els.sort.addEventListener('change', () => { state.sort = els.sort.value; apply(); });
+    els.q.addEventListener('input', () => { state.q = els.q.value; visible = 24; apply(); });
+    els.sort.addEventListener('change', () => { state.sort = els.sort.value; visible = 24; apply(); });
+    document.getElementById('more').addEventListener('click', () => { visible += 24; apply(); });
     document.getElementById('clear').addEventListener('click', () => {
       for (const key of Object.keys(state)) state[key] = key === 'sort' ? 'likes' : '';
-      els.q.value = ''; els.sort.value = 'likes';
+      visible = 24;
+      els.q.value = '';
+      els.sort.value = 'likes';
       document.querySelectorAll('[data-facet]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
       apply();
     });

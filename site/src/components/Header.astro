@@ -1,0 +1,82 @@
+---
+import nav from '../data/nav.json';
+import { LANGS, META } from '../data/i18n';
+
+const mega: any = nav.mega;
+const mobileGroups = [mega.categories, mega.sdks, mega.tags, mega.top];
+---
+
+<header class="site-header">
+  <div class="top-row">
+    <a class="brand" href="/en/">Universal AI Capability Platform</a>
+    <button id="menu-toggle" type="button" aria-controls="mobile-nav" aria-expanded="false">Menu</button>
+  </div>
+
+  <nav class="desktop-nav" aria-label="Main navigation">
+    <div class="has-mega">
+      <a href="/spaces/">Catalog</a>
+      <div class="mega" role="group" aria-label="Catalog sections">
+        <section><h3>Categories</h3>{mega.categories.map((i: any) => <a href={i.href}>{i.label}</a>)}</section>
+        <section><h3>SDK</h3>{mega.sdks.map((i: any) => <a href={i.href}>{i.label}</a>)}</section>
+        <section><h3>Tags</h3>{mega.tags.map((i: any) => <a href={i.href}>{i.label}</a>)}</section>
+        <section><h3>Top Spaces</h3>{mega.top.map((i: any) => <a href={i.href}>{i.label}</a>)}</section>
+      </div>
+    </div>
+    <a href="/categories/">Categories</a>
+    <a href="/tags/mcp-server/">MCP tools</a>
+    <a href="/en/docs/">Docs</a>
+    <a href="/api/items.json">JSON API</a>
+  </nav>
+
+  <nav class="langs" aria-label="Languages">
+    {LANGS.map((l) => <a href={`/${l}/`} hreflang={META[l].htmlLang}>{META[l].label}</a>)}
+  </nav>
+
+  <div id="mobile-nav" hidden>
+    {mobileGroups.map((group: any[]) => (
+      <section>
+        {group.slice(0, 12).map((i: any) => <a href={i.href}>{i.label}</a>)}
+      </section>
+    ))}
+  </div>
+</header>
+
+<script is:inline>
+  const toggle = document.getElementById('menu-toggle');
+  const mobile = document.getElementById('mobile-nav');
+  toggle.addEventListener('click', () => {
+    const open = mobile.hidden;
+    mobile.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>
+
+<style>
+  .site-header { padding: 0.9rem 0; border-bottom: 1px solid #8884; margin-bottom: 1.5rem; position: relative; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { font-weight: 700; text-decoration: none; }
+  #menu-toggle { display: none; }
+  .desktop-nav { display: flex; gap: 1.2rem; margin-top: 0.6rem; font-size: 0.9rem; position: relative; z-index: 5; }
+  .desktop-nav a { text-decoration: none; }
+  .has-mega { position: relative; }
+  .mega {
+    display: none; position: absolute; top: 100%; left: 0; width: min(94vw, 860px);
+    background: #14161a; border: 1px solid #8886; border-radius: 8px;
+    padding: 1rem; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+    box-shadow: 0 12px 30px #0008; z-index: 10;
+  }
+  .has-mega:hover .mega, .has-mega:focus-within .mega { display: grid; }
+  .mega section { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; }
+  .mega h3 { margin: 0 0 0.3rem; font-size: 0.8rem; text-transform: uppercase; opacity: 0.75; }
+  .mega a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .langs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .langs a { padding: 0.15rem 0.35rem; border: 1px solid #8886; border-radius: 4px; text-decoration: none; font-size: 0.8rem; }
+  .langs a[aria-current="page"] { background: #4a90d2; color: #fff; }
+  #mobile-nav { margin-top: 0.8rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  #mobile-nav section { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; }
+  @media (max-width: 760px) {
+    .desktop-nav { display: none; }
+    #menu-toggle { display: inline-block; padding: 0.35rem 0.7rem; }
+    .mega { display: none !important; }
+  }
+</style>

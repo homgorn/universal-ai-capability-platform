@@ -1,0 +1,513 @@
+{
+  "mega": {
+    "categories": [
+      {
+        "label": "3d",
+        "href": "/categories/3d/"
+      },
+      {
+        "label": "agents-mcp",
+        "href": "/categories/agents-mcp/"
+      },
+      {
+        "label": "audio-speech",
+        "href": "/categories/audio-speech/"
+      },
+      {
+        "label": "developer-tools",
+        "href": "/categories/developer-tools/"
+      },
+      {
+        "label": "education",
+        "href": "/categories/education/"
+      },
+      {
+        "label": "image-editing",
+        "href": "/categories/image-editing/"
+      },
+      {
+        "label": "image-generation",
+        "href": "/categories/image-generation/"
+      },
+      {
+        "label": "ocr-document",
+        "href": "/categories/ocr-document/"
+      },
+      {
+        "label": "other",
+        "href": "/categories/other/"
+      },
+      {
+        "label": "research-benchmarks",
+        "href": "/categories/research-benchmarks/"
+      },
+      {
+        "label": "video",
+        "href": "/categories/video/"
+      }
+    ],
+    "sdks": [
+      {
+        "label": "docker",
+        "href": "/sdk/docker/"
+      },
+      {
+        "label": "gradio",
+        "href": "/sdk/gradio/"
+      },
+      {
+        "label": "static",
+        "href": "/sdk/static/"
+      },
+      {
+        "label": "streamlit",
+        "href": "/sdk/streamlit/"
+      }
+    ],
+    "tags": [
+      {
+        "label": "gradio",
+        "href": "/tags/gradio/"
+      },
+      {
+        "label": "static",
+        "href": "/tags/static/"
+      },
+      {
+        "label": "mcp-server",
+        "href": "/tags/mcp-server/"
+      },
+      {
+        "label": "docker",
+        "href": "/tags/docker/"
+      },
+      {
+        "label": "zerogpu",
+        "href": "/tags/zerogpu/"
+      },
+      {
+        "label": "research-article-template",
+        "href": "/tags/research-article-template/"
+      },
+      {
+        "label": "leaderboard",
+        "href": "/tags/leaderboard/"
+      },
+      {
+        "label": "ml-intern",
+        "href": "/tags/ml-intern/"
+      },
+      {
+        "label": "reinforcement-learning",
+        "href": "/tags/reinforcement-learning/"
+      },
+      {
+        "label": "image-to-image",
+        "href": "/tags/image-to-image/"
+      },
+      {
+        "label": "image-to-video",
+        "href": "/tags/image-to-video/"
+      },
+      {
+        "label": "education",
+        "href": "/tags/education/"
+      },
+      {
+        "label": "text-to-image",
+        "href": "/tags/text-to-image/"
+      },
+      {
+        "label": "text-to-speech",
+        "href": "/tags/text-to-speech/"
+      },
+      {
+        "label": "agents",
+        "href": "/tags/agents/"
+      },
+      {
+        "label": "lora",
+        "href": "/tags/lora/"
+      },
+      {
+        "label": "research paper",
+        "href": "/tags/research paper/"
+      },
+      {
+        "label": "scientific paper",
+        "href": "/tags/scientific paper/"
+      },
+      {
+        "label": "streamlit",
+        "href": "/tags/streamlit/"
+      },
+      {
+        "label": "audio",
+        "href": "/tags/audio/"
+      },
+      {
+        "label": "benchmark",
+        "href": "/tags/benchmark/"
+      },
+      {
+        "label": "data visualization",
+        "href": "/tags/data visualization/"
+      },
+      {
+        "label": "image-editing",
+        "href": "/tags/image-editing/"
+      },
+      {
+        "label": "ocr",
+        "href": "/tags/ocr/"
+      },
+      {
+        "label": "super-resolution",
+        "href": "/tags/super-resolution/"
+      },
+      {
+        "label": "upscaler",
+        "href": "/tags/upscaler/"
+      },
+      {
+        "label": "controlnet",
+        "href": "/tags/controlnet/"
+      },
+      {
+        "label": "document-ai",
+        "href": "/tags/document-ai/"
+      },
+      {
+        "label": "image-upscaling",
+        "href": "/tags/image-upscaling/"
+      },
+      {
+        "label": "not-for-all-audiences",
+        "href": "/tags/not-for-all-audiences/"
+      }
+    ],
+    "top": [
+      {
+        "label": "Open LLM Leaderboard",
+        "href": "/space/open-llm-leaderboard/open_llm_leaderboard/"
+      },
+      {
+        "label": "AI Comic Factory",
+        "href": "/space/jbilcke-hf/ai-comic-factory/"
+      },
+      {
+        "label": "FLUX.1 [dev]",
+        "href": "/space/black-forest-labs/FLUX.1-dev/"
+      },
+      {
+        "label": "MTEB Leaderboard",
+        "href": "/space/mteb/leaderboard/"
+      },
+      {
+        "label": "IllusionDiffusion",
+        "href": "/space/AP123/IllusionDiffusion/"
+      },
+      {
+        "label": "FLUX.1 [Schnell]",
+        "href": "/space/black-forest-labs/FLUX.1-schnell/"
+      },
+      {
+        "label": "MusicGen",
+        "href": "/space/facebook/MusicGen/"
+      }
+    ]
+  },
+  "footer": [
+    {
+      "title": "Categories",
+      "links": [
+        {
+          "label": "3d",
+          "href": "/categories/3d/"
+        },
+        {
+          "label": "agents-mcp",
+          "href": "/categories/agents-mcp/"
+        },
+        {
+          "label": "audio-speech",
+          "href": "/categories/audio-speech/"
+        },
+        {
+          "label": "developer-tools",
+          "href": "/categories/developer-tools/"
+        },
+        {
+          "label": "education",
+          "href": "/categories/education/"
+        },
+        {
+          "label": "image-editing",
+          "href": "/categories/image-editing/"
+        },
+        {
+          "label": "image-generation",
+          "href": "/categories/image-generation/"
+        }
+      ]
+    },
+    {
+      "title": "More categories",
+      "links": [
+        {
+          "label": "ocr-document",
+          "href": "/categories/ocr-document/"
+        },
+        {
+          "label": "other",
+          "href": "/categories/other/"
+        },
+        {
+          "label": "research-benchmarks",
+          "href": "/categories/research-benchmarks/"
+        },
+        {
+          "label": "video",
+          "href": "/categories/video/"
+        }
+      ]
+    },
+    {
+      "title": "SDKs",
+      "links": [
+        {
+          "label": "docker",
+          "href": "/sdk/docker/"
+        },
+        {
+          "label": "gradio",
+          "href": "/sdk/gradio/"
+        },
+        {
+          "label": "static",
+          "href": "/sdk/static/"
+        },
+        {
+          "label": "streamlit",
+          "href": "/sdk/streamlit/"
+        }
+      ]
+    },
+    {
+      "title": "Popular tags",
+      "links": [
+        {
+          "label": "gradio",
+          "href": "/tags/gradio/"
+        },
+        {
+          "label": "static",
+          "href": "/tags/static/"
+        },
+        {
+          "label": "mcp-server",
+          "href": "/tags/mcp-server/"
+        },
+        {
+          "label": "docker",
+          "href": "/tags/docker/"
+        },
+        {
+          "label": "zerogpu",
+          "href": "/tags/zerogpu/"
+        },
+        {
+          "label": "research-article-template",
+          "href": "/tags/research-article-template/"
+        },
+        {
+          "label": "leaderboard",
+          "href": "/tags/leaderboard/"
+        }
+      ]
+    },
+    {
+      "title": "More tags",
+      "links": [
+        {
+          "label": "ml-intern",
+          "href": "/tags/ml-intern/"
+        },
+        {
+          "label": "reinforcement-learning",
+          "href": "/tags/reinforcement-learning/"
+        },
+        {
+          "label": "image-to-image",
+          "href": "/tags/image-to-image/"
+        },
+        {
+          "label": "image-to-video",
+          "href": "/tags/image-to-video/"
+        },
+        {
+          "label": "education",
+          "href": "/tags/education/"
+        },
+        {
+          "label": "text-to-image",
+          "href": "/tags/text-to-image/"
+        },
+        {
+          "label": "text-to-speech",
+          "href": "/tags/text-to-speech/"
+        }
+      ]
+    },
+    {
+      "title": "Licenses",
+      "links": [
+        {
+          "label": "afl-3.0",
+          "href": "/spaces/?lic=afl-3.0"
+        },
+        {
+          "label": "agpl-3.0",
+          "href": "/spaces/?lic=agpl-3.0"
+        },
+        {
+          "label": "apache-2.0",
+          "href": "/spaces/?lic=apache-2.0"
+        },
+        {
+          "label": "artistic-2.0",
+          "href": "/spaces/?lic=artistic-2.0"
+        },
+        {
+          "label": "cc-by-4.0",
+          "href": "/spaces/?lic=cc-by-4.0"
+        },
+        {
+          "label": "cc-by-nc-4.0",
+          "href": "/spaces/?lic=cc-by-nc-4.0"
+        },
+        {
+          "label": "cc-by-nc-nd-4.0",
+          "href": "/spaces/?lic=cc-by-nc-nd-4.0"
+        }
+      ]
+    },
+    {
+      "title": "Top Spaces",
+      "links": [
+        {
+          "label": "Open LLM Leaderboard",
+          "href": "/space/open-llm-leaderboard/open_llm_leaderboard/"
+        },
+        {
+          "label": "AI Comic Factory",
+          "href": "/space/jbilcke-hf/ai-comic-factory/"
+        },
+        {
+          "label": "FLUX.1 [dev]",
+          "href": "/space/black-forest-labs/FLUX.1-dev/"
+        },
+        {
+          "label": "MTEB Leaderboard",
+          "href": "/space/mteb/leaderboard/"
+        },
+        {
+          "label": "IllusionDiffusion",
+          "href": "/space/AP123/IllusionDiffusion/"
+        },
+        {
+          "label": "FLUX.1 [Schnell]",
+          "href": "/space/black-forest-labs/FLUX.1-schnell/"
+        },
+        {
+          "label": "MusicGen",
+          "href": "/space/facebook/MusicGen/"
+        }
+      ]
+    },
+    {
+      "title": "Trending",
+      "links": [
+        {
+          "label": "Wan2.2 14B Fast Preview [NEW]",
+          "href": "/space/JCisHERE/wan2-2-i2v-v3/"
+        },
+        {
+          "label": "MiniMax-H3-Image",
+          "href": "/space/MiniMaxAI/minimax-h3-image/"
+        },
+        {
+          "label": "pi-H3",
+          "href": "/space/Lakonik/pi-H3/"
+        },
+        {
+          "label": "The Ultimate MoE Training Handbook",
+          "href": "/space/huggingface/moe-blogpost/"
+        },
+        {
+          "label": "Harness Leaderboard",
+          "href": "/space/joelniklaus/harness-leaderboard/"
+        },
+        {
+          "label": "BFS Best Face Swap",
+          "href": "/space/hugging-apps/bfs-best-face-swap/"
+        },
+        {
+          "label": "Krea 2 Turbo Revamped: Image Editor",
+          "href": "/space/waitinghere/Krea2T-Revamped/"
+        }
+      ]
+    },
+    {
+      "title": "Catalog",
+      "links": [
+        {
+          "label": "All Spaces",
+          "href": "/spaces/"
+        },
+        {
+          "label": "JSON catalog",
+          "href": "/api/items.json"
+        },
+        {
+          "label": "Stats",
+          "href": "/api/stats.json"
+        },
+        {
+          "label": "Categories",
+          "href": "/categories/"
+        },
+        {
+          "label": "Machine-readable index",
+          "href": "/.well-known/ai-catalog.json"
+        }
+      ]
+    },
+    {
+      "title": "Resources",
+      "links": [
+        {
+          "label": "Documentation",
+          "href": "/en/docs/"
+        },
+        {
+          "label": "Research source",
+          "href": "/en/docs/catalog-crawler/"
+        },
+        {
+          "label": "llms.txt",
+          "href": "/llms.txt"
+        },
+        {
+          "label": "GitHub",
+          "href": "https://github.com/homgorn/universal-ai-capability-platform"
+        },
+        {
+          "label": "Constitution",
+          "href": "https://github.com/homgorn/universal-ai-capability-platform/blob/main/.specify/memory/constitution.md"
+        }
+      ]
+    }
+  ],
+  "base": "https://uacp-site.rvcdax.workers.dev"
+}

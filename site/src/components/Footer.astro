@@ -1,0 +1,33 @@
+---
+import nav from '../data/nav.json';
+const groups: any[] = nav.footer;
+---
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    {groups.map((group) => (
+      <section>
+        <h3>{group.title}</h3>
+        <ul>
+          {group.links.map((link: any) => <li><a href={link.href}>{link.label}</a></li>)}
+        </ul>
+      </section>
+    ))}
+  </div>
+  <p class="foot-note">
+    Built from measured Hugging Face Hub data ·
+    <a href="/api/stats.json">catalog stats</a> ·
+    <a href="https://github.com/homgorn/universal-ai-capability-platform">source</a>
+  </p>
+</footer>
+
+<style>
+  .site-footer { margin-top: 3rem; border-top: 1px solid #8884; padding-top: 1.25rem; font-size: 0.82rem; }
+  .footer-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem 1.25rem; }
+  .footer-grid h3 { margin: 0 0 0.4rem; font-size: 0.85rem; text-transform: uppercase; opacity: 0.8; }
+  .footer-grid ul { margin: 0; padding-left: 1rem; }
+  .footer-grid li { margin: 0.15rem 0; overflow: hidden; text-overflow: ellipsis; }
+  .footer-grid a { text-decoration: none; }
+  .foot-note { margin-top: 1.2rem; opacity: 0.75; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
