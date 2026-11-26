@@ -16,7 +16,7 @@ The Universal AI Capability Platform is a provider-neutral registry built on top
 | License | 257 declared, 244 unknown |
 | With models / datasets | 355 / 91 |
 | Unique SHA | 492 of 501 records |
-| Storage | PostgreSQL (SQLite locally), raw snapshots as JSON |
+| Storage | PostgreSQL (SQLite locally), raw snapshots as JSON (R2 planned — ADR-005) |
 | Health | `python scripts/health.py` — ruff + mypy + pytest |
 | License | MIT |
 
@@ -37,6 +37,7 @@ measured.
 5. **Telegram Adapter** — bot commands + Mini App.
 6. **Planner** — goal + deployment intent → recipe.
 7. **Provider abstraction** — Replicate, fal and non-HF providers.
+8. **Raw snapshots → Cloudflare R2** — store URI/hash/size in PostgreSQL (ADR-005).
 
 Do not build an own LLM, vector DB, graph DB, agent swarm, auto-clone of every Space or 20
 channel adapters before the catalog exists.
@@ -47,8 +48,9 @@ channel adapters before the catalog exists.
 cd backend
 python -m pip install -e ".[dev]"
 
-# Health first
+# Health + collected-catalog verification
 python scripts/health.py
+python scripts/verify_catalog.py
 
 # Bounded live crawl (resumes from checkpoint)
 set PYTHONPATH=src          # Windows PowerShell: $env:PYTHONPATH='src'

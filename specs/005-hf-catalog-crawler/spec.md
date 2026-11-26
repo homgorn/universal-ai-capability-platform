@@ -52,8 +52,9 @@ After a crawl the system reports measured counts: total records, SDK distributio
 - SC-005: measured report matches database counts exactly.
 
 ## Assumptions
-- Public Hub API without a token; `HF_TOKEN` optional to raise rate limits.
-- PostgreSQL in production, SQLite for local/dev; raw snapshots stored as JSON.
+- Public Hub API; `HF_TOKEN` optional to raise rate limits (stored in GitHub Secrets).
+- PostgreSQL in production, SQLite for local/dev; raw snapshots stored as JSON for MVP.
+- R2 object storage for raw snapshots is deferred and recorded in ADR-005.
 - Derived from `docs/original-research-2026-10-07.md` (owner chat, 2026-10-07).
 
 ## RU
