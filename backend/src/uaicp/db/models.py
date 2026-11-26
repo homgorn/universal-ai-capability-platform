@@ -290,6 +290,7 @@ class HFSpace(TenantMixin, Base):
     author: Mapped[str | None] = mapped_column(String(255))
     title: Mapped[str | None] = mapped_column(String(512))
     sdk: Mapped[str | None] = mapped_column(String(64))
+    category: Mapped[str | None] = mapped_column(String(64), index=True)
     tags: Mapped[list] = mapped_column(JSONType, default=list)
     likes: Mapped[int | None] = mapped_column(Integer)
     trending_score: Mapped[float | None] = mapped_column(Float)

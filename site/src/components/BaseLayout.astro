@@ -7,15 +7,18 @@ interface Props {
   description?: string;
   canonical?: string;
   alternates?: Record<string, string>;
+  extraJsonLd?: object[];
 }
 
-const { lang, title, description, canonical, alternates } = Astro.props;
+const { lang, title, description, canonical, alternates, extraJsonLd = [] } = Astro.props;
 const meta = META[lang];
 const pageTitle = title ?? meta.title;
 const pageDesc = description ?? meta.description;
 const canonicalUrl = canonical ?? `${Astro.site}${lang}/`;
-const alternateLinks = alternates ?? Object.fromEntries(
-  LANGS.map((l) => [l, `${Astro.site}${l}/`]),
+const alternateLinks = alternates ?? (
+  canonical
+    ? { 'x-default': canonical }
+    : Object.fromEntries(LANGS.map((l) => [l, `${Astro.site}${l}/`]))
 );
 
 const jsonLd = {
@@ -50,6 +53,7 @@ const jsonLd = {
     <meta property="og:url" content={canonicalUrl} />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {extraJsonLd.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "16b6276b25da4ff88d31a81396efab81"}'></script>
     <style>
       :root { color-scheme: light dark; font-family: system-ui, -apple-system, Segoe UI, sans-serif; line-height: 1.6; }
@@ -71,6 +75,7 @@ const jsonLd = {
   <body>
     <header>
       <strong>Universal AI Capability Platform</strong>
+      <a href="/spaces/">Catalog</a>
       <nav class="langs" aria-label="Languages">
         {LANGS.map((l) => (
           <a href={`/${l}/`} hreflang={META[l].htmlLang} aria-current={l === lang ? 'page' : undefined}>

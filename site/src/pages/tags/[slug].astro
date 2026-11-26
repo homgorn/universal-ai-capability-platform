@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import SpaceCard from '../../components/SpaceCard.astro';
+import catalog from '../../data/catalog.json';
+import { tagSlug } from '../../data/slug';
+const items: any[] = catalog as any[];
+const counts = new Map<string, number>();
+for (const item of items) for (const t of item.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+
+export function getStaticPaths() {
+  const data: any[] = catalog as any[];
+  const c = new Map<string, number>();
+  for (const i of data) for (const t of i.tags) c.set(t, (c.get(t) ?? 0) + 1);
+  return [...c.entries()]
+    .filter(([, n]) => n >= 2)
+    .map(([tag]) => ({
+      params: { slug: tagSlug(tag) },
+      props: { tag, list: data.filter((i) => i.tags.includes(tag)) },
+    }));
+}
+const { tag, list } = Astro.props as { tag: string; list: any[] };
+const base = 'https://uacp-site.rvcdax.workers.dev';
+const canonical = `${base}/tags/${tagSlug(tag)}/`;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: `#${tag} Spaces`, url: canonical,
+  mainEntity: { '@type': 'ItemList', numberOfItems: list.length, itemListElement: list.slice(0, 30).map((i, n) => ({ '@type': 'ListItem', position: n + 1, name: i.title, url: `${base}/space/${i.id}/` })) },
+};
+---
+<BaseLayout lang="en" title={`#${tag} — HF Spaces tag | Universal AI Capability Platform`} description={`${list.length} Hugging Face Spaces tagged ${tag}.`} canonical={canonical} extraJsonLd={[schema]}>
+  <nav><a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> → #{tag}</nav>
+  <h1>#{tag}</h1>
+  <p><strong>{list.length} Spaces</strong> carry this tag in the measured Hub catalog.</p>
+  {list.map((item) => <SpaceCard item={item} />)}
+</BaseLayout>

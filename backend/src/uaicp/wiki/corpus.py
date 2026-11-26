@@ -486,4 +486,77 @@ TOPICS: list[dict] = [
         "sources": ["docs/original-research-2026-10-07.md", "docs/adr/ADR-004-ingestion-first.md"],
         "verify": ["Full catalog size and exact API rate limits"],
     },
+    {
+        "slug": "site-architecture-2026",
+        "title_en": "Site architecture for 2026",
+        "title_ru": "Архитектура сайта 2026",
+        "answer_en": (
+            "The site is a catalog interface, not a brochure. It has a faceted /spaces search "
+            "page, 501 entity pages under /space/{id}/, indexable category/tag/SDK hubs, and "
+            "machine-readable endpoints (/api/items.json, /api/index.json, /api/stats.json, "
+            "/api/corpus.jsonl, /.well-known/ai-catalog.json). 627 static pages build in 11s. "
+            "Filter combinations stay client-side with a self-canonical base URL; only curated "
+            "single-facet hubs are indexable."
+        ),
+        "answer_ru": (
+            "Сайт — интерфейс каталога, а не брошюра. Есть facet-поиск /spaces, 501 страница "
+            "/space/{id}/, индексируемые хабы категорий/тегов/SDK и машиночитаемые эндпоинты "
+            "(/api/items.json и др.). Собирается 627 страниц за 11 с. Комбинации фильтров "
+            "остаются client-side с self-canonical, индексируются только хабы."
+        ),
+        "bullets": [
+            ("Search", "text + SDK + category + license + tag facets, URL state, client-side JSON"),
+            ("Entity page", "answer-first facts table, visible Q&A, related spaces, no invented capability claims"),
+            ("Structured data", "SoftwareApplication, CollectionPage + ItemList, BreadcrumbList; FAQPage retired in 2026"),
+            ("llms.txt", "cheap convenience, not a standard; Google ignores it — JSON endpoints are primary"),
+        ],
+        "table": {
+            "headers": ["Route", "Purpose"],
+            "rows": [
+                ["/spaces/", "Faceted search + first 24 server-rendered cards"],
+                ["/space/{id}/", "Entity page for each HF Space"],
+                ["/categories/, /tags/, /sdk/", "Indexable hub pages with ItemList"],
+                ["/api/items.json", "Full machine-readable catalog"],
+                ["/.well-known/ai-catalog.json", "Endpoint discovery"],
+            ],
+        },
+        "sources": ["site/src/pages/", "site/public/api/", "docs/original-research-2026-10-07.md §28"],
+        "verify": ["Search-engine indexation of the new pages"],
+    },
+    {
+        "slug": "hf-api-opportunities",
+        "title_en": "HF API opportunities",
+        "title_ru": "Возможности HF API",
+        "answer_en": (
+            "Beyond the catalog endpoint, the owner's token can use HF semantic space search "
+            "(/api/spaces/semantic-search with ai_category and semanticRelevancyScore), "
+            "Gradio agents.md and /gradio_api/info for contracts, /gradio_api/mcp/schema for MCP "
+            "tools, Inference Providers with provider=auto failover, webhooks for Space changes, "
+            "collections for curated catalogs, and scheduled Jobs for evaluation. Hub rate limits "
+            "are 500 anonymous / 1000 free / 2500 PRO requests per 5 minutes (reported)."
+        ),
+        "answer_ru": (
+            "Кроме каталога, токен даёт семантический поиск Space-ов, agents.md и /gradio_api/info "
+            "для контрактов, /gradio_api/mcp/schema для MCP, Inference Providers с failover, "
+            "webhooks для изменений, collections и Jobs для оценок. Лимиты Hub: 500/1000/2500 "
+            "запросов за 5 минут (сообщено)."
+        ),
+        "bullets": [
+            ("Contract source of truth", "agents.md per Space; openapi.json may return HTML"),
+            ("Execution", "Inference Providers router.huggingface.co with provider=auto"),
+            ("Legal", "cardData.license must be checked; public ≠ redistribution rights"),
+        ],
+        "table": {
+            "headers": ["Capability", "Endpoint"],
+            "rows": [
+                ["Semantic discovery", "/api/spaces/semantic-search?q=..."],
+                ["Agent contract", "/spaces/{id}/agents.md"],
+                ["MCP tools", "/gradio_api/mcp/schema"],
+                ["Curated catalog", "/api/collections?owner=..."],
+                ["Change feed", "/api/settings/webhooks"],
+            ],
+        },
+        "sources": ["https://huggingface.co/.well-known/openapi.md", "https://huggingface.co/docs/hub/en/rate-limits"],
+        "verify": ["Token-scoped live calls to semantic search, webhooks and Jobs"],
+    },
 ]

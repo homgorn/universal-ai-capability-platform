@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import SpaceCard from '../../components/SpaceCard.astro';
+import catalog from '../../data/catalog.json';
+const items: any[] = catalog as any[];
+const counts = new Map<string, number>();
+for (const item of items) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+
+export function getStaticPaths() {
+  const data: any[] = catalog as any[];
+  const unique = [...new Set(data.map((i) => i.category))];
+  return unique.map((category) => ({
+    params: { slug: category },
+    props: { category, list: data.filter((i) => i.category === category) },
+  }));
+}
+const { category, list } = Astro.props as { category: string; list: any[] };
+const base = 'https://uacp-site.rvcdax.workers.dev';
+const canonical = `${base}/categories/${category}/`;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${category} Spaces`, url: canonical,
+  mainEntity: { '@type': 'ItemList', numberOfItems: list.length, itemListElement: list.slice(0, 30).map((i, n) => ({ '@type': 'ListItem', position: n + 1, name: i.title, url: `${base}/space/${i.id}/` })) },
+};
+---
+<BaseLayout lang="en" title={`${category} Spaces — catalog | Universal AI Capability Platform`} description={`${list.length} Hugging Face Spaces in ${category}, with SDK, license and tags.`} canonical={canonical} extraJsonLd={[schema]}>
+  <nav><a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> → <a href="/categories/">Categories</a> → {category}</nav>
+  <h1>{category}</h1>
+  <p><strong>{list.length} Spaces</strong> are classified in this category from measured Hub tags.</p>
+  <p><a href={`/spaces/?cat=${encodeURIComponent(category)}`}>Open filtered catalog →</a></p>
+  {list.map((item) => <SpaceCard item={item} />)}
+</BaseLayout>

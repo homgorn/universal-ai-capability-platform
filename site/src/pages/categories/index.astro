@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import catalog from '../../data/catalog.json';
+const items: any[] = catalog as any[];
+const counts = new Map<string, number>();
+for (const item of items) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+const categories = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+---
+<BaseLayout lang="en" title="Categories — HF Spaces catalog" description={`${categories.length} categories across ${items.length} Hugging Face Spaces.`} canonical="https://uacp-site.rvcdax.workers.dev/categories/">
+  <h1>Categories</h1>
+  <p>{items.length} Hugging Face Spaces grouped into {categories.length} deterministic categories derived from measured tags.</p>
+  <nav><a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> → Categories</nav>
+  <ul>
+    {categories.map(([name, count]) => (
+      <li><a href={`/categories/${name}/`}>{name}</a> — {count} Spaces</li>
+    ))}
+  </ul>
+</BaseLayout>

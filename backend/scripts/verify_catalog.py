@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 
 from uaicp.catalog.report import inventory_report
-from uaicp.db.models import IngestCheckpoint
+from uaicp.db.models import IngestCheckpoint, KGTriple
 from uaicp.db.session import engine, session_scope
 
 
@@ -14,6 +14,7 @@ def main() -> int:
     with session_scope(engine) as session:
         report = inventory_report(session)
         checkpoint = session.get(IngestCheckpoint, "hf:spaces")
+        graph_triples = session.query(KGTriple).filter(KGTriple.tenant_id == "public").count()
 
     if report["total"] < 500:
         failures.append(f"expected >=500 records, got {report['total']}")
@@ -27,8 +28,11 @@ def main() -> int:
         failures.append("expanded models missing (check expand[] fields)")
     if report["license_known"] == 0 or report["license_unknown"] == 0:
         failures.append("license parsing not exercised")
+    if graph_triples < 1000:
+        failures.append(f"knowledge graph has only {graph_triples} triples")
 
-    print(json.dumps({"report": report, "failures": failures}, indent=2))
+    payload = {"report": report, "graph_triples": graph_triples, "failures": failures}
+    print(json.dumps(payload, indent=2))
     print("CATALOG VERIFY: " + ("PASS" if not failures else "FAIL"))
     return 1 if failures else 0
 

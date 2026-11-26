@@ -12,6 +12,12 @@ const required = [
   'dist/sitemap-index.xml',
   'dist/sitemap-0.xml',
   'dist/d4f8a9c2e7b14a6b8f0c3d5e7a9b1c24.txt',
+  'dist/spaces/index.html',
+  'dist/categories/index.html',
+  'dist/catalog-index.json',
+  'dist/api/items.json',
+  'dist/api/stats.json',
+  'dist/.well-known/ai-catalog.json',
   ...['en', 'ru', 'zh-cn', 'es', 'de'].map((l) => `dist/${l}/index.html`),
   'dist/en/docs/overview/index.html',
   'dist/ru/docs/overview/index.html',
@@ -30,6 +36,10 @@ if ((sitemap.match(/hreflang=/g) ?? []).length < 18) failures.push('sitemap href
 
 const en = readFileSync(resolve(root, 'dist/en/index.html'), 'utf8');
 if (!en.includes('static.cloudflareinsights.com/beacon.min.js')) failures.push('Web Analytics beacon missing');
+const spaces = readFileSync(resolve(root, 'dist/spaces/index.html'), 'utf8');
+if (!spaces.includes('data-facet="cat"')) failures.push('catalog facets missing');
+const catalog = JSON.parse(readFileSync(resolve(root, 'dist/catalog-index.json'), 'utf8'));
+if (catalog.length < 500) failures.push('catalog index too small');
 for (const code of ['en', 'ru', 'zh-CN', 'es', 'de', 'x-default']) {
   if (!en.includes(`hreflang="${code}"`)) failures.push(`HTML hreflang ${code} missing`);
 }

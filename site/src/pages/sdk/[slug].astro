@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import SpaceCard from '../../components/SpaceCard.astro';
+import catalog from '../../data/catalog.json';
+const items: any[] = catalog as any[];
+
+export function getStaticPaths() {
+  const data: any[] = catalog as any[];
+  return [...new Set(data.map((i) => i.sdk))].map((sdk) => ({
+    params: { slug: sdk },
+    props: { sdk, list: data.filter((i) => i.sdk === sdk) },
+  }));
+}
+const { sdk, list } = Astro.props as { sdk: string; list: any[] };
+const base = 'https://uacp-site.rvcdax.workers.dev';
+const canonical = `${base}/sdk/${sdk}/`;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${sdk} Spaces`, url: canonical,
+  mainEntity: { '@type': 'ItemList', numberOfItems: list.length, itemListElement: list.slice(0, 30).map((i, n) => ({ '@type': 'ListItem', position: n + 1, name: i.title, url: `${base}/space/${i.id}/` })) },
+};
+---
+<BaseLayout lang="en" title={`${sdk} Spaces — catalog | Universal AI Capability Platform`} description={`${list.length} Hugging Face Spaces using ${sdk}.`} canonical={canonical} extraJsonLd={[schema]}>
+  <nav><a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> → {sdk}</nav>
+  <h1>{sdk}</h1>
+  <p><strong>{list.length} Spaces</strong> declare <code>{sdk}</code> as their SDK.</p>
+  {list.map((item) => <SpaceCard item={item} />)}
+</BaseLayout>

@@ -1,0 +1,195 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import SpaceCard from '../../components/SpaceCard.astro';
+import catalog from '../../data/catalog.json';
+
+const items: any[] = catalog as any[];
+const categories = [...new Set(items.map((i) => i.category))].sort();
+const sdks = [...new Set(items.map((i) => i.sdk))].sort();
+const licenses = [...new Set(items.map((i) => i.license))].sort();
+const tagCounts = new Map<string, number>();
+for (const item of items) {
+  for (const tag of item.tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+}
+const tags = [...tagCounts.entries()]
+  .filter(([, count]) => count >= 2)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 40)
+  .map(([tag]) => tag);
+
+const canonical = 'https://uacp-site.rvcdax.workers.dev/spaces/';
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'HF Space catalog',
+  url: canonical,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: items.length,
+    itemListElement: items.slice(0, 24).map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.title,
+      url: `https://uacp-site.rvcdax.workers.dev/space/${item.id}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  lang="en"
+  title="HF Spaces catalog — search, filters, categories | Universal AI Capability Platform"
+  description={`Search ${items.length} Hugging Face Spaces by category, SDK, license and tags. Faceted, machine-readable, answer-first catalog.`}
+  canonical={canonical}
+  extraJsonLd={[itemList]}
+>
+  <h1>HF Spaces catalog</h1>
+  <p>
+    <strong>{items.length} Spaces</strong> collected from the public Hugging Face Hub. Search by
+    name, filter by category, SDK, license and tag, or use the machine-readable
+    <a href="/api/items.json">JSON catalog</a>.
+  </p>
+
+  <nav aria-label="Breadcrumb">
+    <a href="/en/">Home</a> → <span>Catalog</span>
+  </nav>
+
+  <section class="controls">
+    <label>
+      Search
+      <input id="q" type="search" placeholder="background removal, image-to-video…" />
+    </label>
+    <label>
+      Sort
+      <select id="sort">
+        <option value="likes">Most liked</option>
+        <option value="trending">Trending</option>
+        <option value="recent">Recently modified</option>
+        <option value="name">Name</option>
+      </select>
+    </label>
+    <fieldset>
+      <legend>Category</legend>
+      {categories.map((c) => <button type="button" data-facet="cat" data-value={c}>{c}</button>)}
+    </fieldset>
+    <fieldset>
+      <legend>SDK</legend>
+      {sdks.map((s) => <button type="button" data-facet="sdk" data-value={s}>{s}</button>)}
+    </fieldset>
+    <fieldset>
+      <legend>License</legend>
+      {licenses.map((l) => <button type="button" data-facet="lic" data-value={l}>{l}</button>)}
+    </fieldset>
+    <fieldset>
+      <legend>Tags</legend>
+      {tags.map((t) => <button type="button" data-facet="tag" data-value={t}>#{t}</button>)}
+    </fieldset>
+    <button type="button" id="clear">Clear filters</button>
+  </section>
+
+  <p id="count" aria-live="polite">Showing {Math.min(24, items.length)} of {items.length}</p>
+  <div id="results">
+    {items.slice(0, 24).map((item) => <SpaceCard item={item} />)}
+  </div>
+
+  <script is:inline define:vars={{ total: items.length }}>
+    const state = { q: '', sort: 'likes', cat: '', sdk: '', lic: '', tag: '' };
+    const params = new URLSearchParams(location.search);
+    for (const key of Object.keys(state)) if (params.has(key)) state[key] = params.get(key);
+
+    const els = {
+      q: document.getElementById('q'),
+      sort: document.getElementById('sort'),
+      count: document.getElementById('count'),
+      results: document.getElementById('results'),
+    };
+    els.q.value = state.q;
+    els.sort.value = state.sort;
+
+    function syncUrl() {
+      const p = new URLSearchParams();
+      for (const [k, v] of Object.entries(state)) if (v) p.set(k, v);
+      history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : ''));
+    }
+
+    function render(list) {
+      els.results.replaceChildren();
+      els.count.textContent = `Showing ${list.length} of ${total}`;
+      for (const item of list) {
+        const card = document.createElement('article');
+        card.className = 'card';
+        const h3 = document.createElement('h3');
+        const a = document.createElement('a');
+        a.href = '/space/' + item.id + '/';
+        a.textContent = item.title;
+        h3.append(a);
+        const p = document.createElement('p');
+        p.textContent = item.summary;
+        const meta = document.createElement('p');
+        meta.textContent = `${item.sdk} · ${item.category} · ${item.likes} likes · ${item.license}`;
+        card.append(h3, p, meta);
+        els.results.append(card);
+      }
+    }
+
+    let all = [];
+    let ready = false;
+    function apply() {
+      if (!ready) return;
+      let list = all.filter((item) => {
+        if (state.cat && item.category !== state.cat) return false;
+        if (state.sdk && item.sdk !== state.sdk) return false;
+        if (state.lic && item.license !== state.lic) return false;
+        if (state.tag && !item.tags.includes(state.tag)) return false;
+        if (state.q) {
+          const hay = (item.title + ' ' + item.id + ' ' + item.author + ' ' + item.tags.join(' ')).toLowerCase();
+          if (!hay.includes(state.q.toLowerCase())) return false;
+        }
+        return true;
+      });
+      const sorters = {
+        likes: (a, b) => b.likes - a.likes,
+        trending: (a, b) => b.trending - a.trending,
+        recent: (a, b) => String(b.lastModified).localeCompare(String(a.lastModified)),
+        name: (a, b) => a.title.localeCompare(b.title),
+      };
+      list = list.sort(sorters[state.sort] || sorters.likes);
+      render(list);
+      syncUrl();
+    }
+
+    document.querySelectorAll('[data-facet]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.facet;
+        state[key] = state[key] === btn.dataset.value ? '' : btn.dataset.value;
+        document.querySelectorAll(`[data-facet="${key}"]`).forEach((b) => {
+          b.setAttribute('aria-pressed', String(b.dataset.value === state[key]));
+        });
+        apply();
+      });
+    });
+    els.q.addEventListener('input', () => { state.q = els.q.value; apply(); });
+    els.sort.addEventListener('change', () => { state.sort = els.sort.value; apply(); });
+    document.getElementById('clear').addEventListener('click', () => {
+      for (const key of Object.keys(state)) state[key] = key === 'sort' ? 'likes' : '';
+      els.q.value = ''; els.sort.value = 'likes';
+      document.querySelectorAll('[data-facet]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      apply();
+    });
+
+    fetch('/catalog-index.json').then((r) => r.json()).then((data) => {
+      all = data; ready = true; apply();
+    });
+  </script>
+
+  <style>
+    .controls { border: 1px solid #8886; border-radius: 8px; padding: 0.75rem 1rem; margin: 1.5rem 0; }
+    .controls label { display: block; margin: 0.5rem 0; }
+    .controls input, .controls select { width: min(100%, 30rem); padding: 0.4rem; }
+    fieldset { border: 0; padding: 0.5rem 0; margin: 0.5rem 0; }
+    legend { font-weight: 600; }
+    fieldset button { margin: 0.2rem; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
+    fieldset button[aria-pressed="true"] { background: #4a90d2; color: #fff; }
+    nav { font-size: 0.85rem; }
+  </style>
+</BaseLayout>

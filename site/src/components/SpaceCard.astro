@@ -1,0 +1,32 @@
+---
+import { tagSlug } from '../data/slug';
+
+interface Props {
+  item: any;
+}
+
+const { item } = Astro.props;
+---
+
+<article class="card">
+  <h3><a href={`/space/${item.id}/`}>{item.title}</a></h3>
+  <p class="summary">{item.summary}</p>
+  <p class="meta">
+    <span>{item.sdk}</span> · <a href={`/categories/${item.category}/`}>{item.category}</a> ·
+    {item.likes} likes · <span class="oc-muted">{item.license}</span>
+  </p>
+  <p class="tags">
+    {item.tags.slice(0, 6).map((tag: string) => (
+      <a href={`/tags/${tagSlug(tag)}/`}>#{tag}</a>
+    ))}
+  </p>
+</article>
+
+<style>
+  .card { border: 1px solid #8886; border-radius: 8px; padding: 0.85rem 1rem; margin: 0.75rem 0; }
+  h3 { margin: 0 0 0.35rem; font-size: 1.05rem; }
+  h3 a { text-decoration: none; }
+  .summary { margin: 0.25rem 0; font-size: 0.92rem; }
+  .meta, .tags { margin: 0.35rem 0 0; font-size: 0.82rem; color: #888; }
+  .tags a { margin-right: 0.5rem; text-decoration: none; }
+</style>

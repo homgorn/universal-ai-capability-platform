@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import SpaceCard from '../../components/SpaceCard.astro';
+import catalog from '../../data/catalog.json';
+import { tagSlug } from '../../data/slug';
+
+const items: any[] = catalog as any[];
+
+export function getStaticPaths() {
+  const data: any[] = catalog as any[];
+  return data.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+
+const { id } = Astro.params;
+const { item } = Astro.props as { item: any };
+const base = 'https://uacp-site.rvcdax.workers.dev';
+const canonical = `${base}/space/${id}/`;
+
+const related = items
+  .filter((other) => other.id !== item.id)
+  .map((other) => ({
+    item: other,
+    score:
+      (other.category === item.category ? 4 : 0) +
+      other.tags.filter((t: string) => item.tags.includes(t)).length +
+      (other.sdk === item.sdk ? 1 : 0),
+  }))
+  .filter((r) => r.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 6)
+  .map((r) => r.item);
+
+const software = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': canonical,
+  name: item.title,
+  alternateName: item.id,
+  url: canonical,
+  description: item.summary,
+  applicationCategory: item.category,
+  operatingSystem: 'Web',
+  author: item.author ? { '@type': 'Organization', name: item.author } : undefined,
+  sameAs: [item.source_url],
+};
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Catalog', item: `${base}/spaces/` },
+    { '@type': 'ListItem', position: 2, name: item.category, item: `${base}/categories/${item.category}/` },
+    { '@type': 'ListItem', position: 3, name: item.title, item: canonical },
+  ],
+};
+---
+
+<BaseLayout
+  lang="en"
+  title={`${item.title} — HF Space in ${item.category} | Universal AI Capability Platform`}
+  description={item.summary}
+  canonical={canonical}
+  extraJsonLd={[software, breadcrumbs]}
+>
+  <nav aria-label="Breadcrumb">
+    <a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> →
+    <a href={`/categories/${item.category}/`}>{item.category}</a> → <span>{item.title}</span>
+  </nav>
+
+  <h1>{item.title}</h1>
+  <p>{item.summary}</p>
+
+  <h2>Facts</h2>
+  <table>
+    <tbody>
+      <tr><th>Space ID</th><td><code>{item.id}</code></td></tr>
+      <tr><th>Author</th><td>{item.author ?? 'not declared'}</td></tr>
+      <tr><th>SDK</th><td><a href={`/sdk/${item.sdk}/`}>{item.sdk}</a></td></tr>
+      <tr><th>Category</th><td><a href={`/categories/${item.category}/`}>{item.category}</a></td></tr>
+      <tr><th>License</th><td>{item.license}</td></tr>
+      <tr><th>Likes</th><td>{item.likes}</td></tr>
+      <tr><th>Linked models</th><td>{item.models.length}</td></tr>
+      <tr><th>Linked datasets</th><td>{item.datasets.length}</td></tr>
+      <tr><th>Source</th><td><a href={item.source_url} rel="nofollow">Hugging Face Space</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Tags</h2>
+  <p>
+    {item.tags.map((tag: string) => <a href={`/tags/${tagSlug(tag)}/`}>#{tag} </a>)}
+  </p>
+
+  <h2>Capability contract</h2>
+  <p>
+    Not extracted yet. Inputs, outputs and semantic types remain <strong>VERIFY</strong> until the
+    Gradio contract extractor reads <code>agents.md</code> and <code>/gradio_api/info</code> for
+    this Space. No capability or execution claim is made here.
+  </p>
+
+  <h2>Questions</h2>
+  <h3>What is {item.title}?</h3>
+  <p>{item.summary}</p>
+  <h3>Which SDK does it use?</h3>
+  <p>{item.sdk}. Category: {item.category}.</p>
+  <h3>Can it be reused commercially?</h3>
+  <p>
+    License state: {item.license}. Public visibility does not grant redistribution rights;
+    check the Space's LICENSE file before copying code or weights.
+  </p>
+
+  {related.length > 0 && (
+    <section>
+      <h2>Related Spaces</h2>
+      {related.map((other) => <SpaceCard item={other} />)}
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  th { text-align: left; width: 14rem; }
+  td, th { padding: 0.35rem 0.5rem; border: 1px solid #8886; }
+</style>
