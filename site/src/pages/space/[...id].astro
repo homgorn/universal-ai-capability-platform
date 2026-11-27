@@ -89,6 +89,19 @@ const breadcrumbs = {
     {item.tags.map((tag: string) => <a href={`/tags/${tagSlug(tag)}/`}>#{tag} </a>)}
   </p>
 
+  <h2>Embed</h2>
+  <p>
+    This Space is classified <strong>{item.embed_status}</strong>. {item.embed_reason}.
+    {item.embed_status === 'EMBEDDABLE' && item.embed_url && (
+      item.web_component
+        ? <code>&lt;gradio-app src="{item.embed_url}"&gt;&lt;/gradio-app&gt;</code>
+        : <code>&lt;iframe src="{item.embed_url}" loading="lazy"&gt;&lt;/iframe&gt;</code>
+    )}
+    {item.embed_status !== 'EMBEDDABLE' && (
+      <a href="/embed/">See embeddable Spaces →</a>
+    )}
+  </p>
+
   <h2>Capability contract</h2>
   <p>
     Not extracted yet. Inputs, outputs and semantic types remain <strong>VERIFY</strong> until the

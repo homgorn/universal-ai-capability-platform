@@ -6,6 +6,8 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
+from uaicp.catalog.embed import embed_info
+
 from uaicp.catalog.taxonomy import categorize
 from uaicp.db.models import HFSpace
 from uaicp.db.session import engine, session_scope
@@ -38,6 +40,13 @@ def main() -> None:
             category = categorize(tags)
             if row.category != category:
                 row.category = category
+            embed = embed_info({
+                "id": row.id,
+                "private": False,
+                "subdomain": row.subdomain,
+                "sdk": row.sdk,
+                "runtime": row.runtime,
+            })
             records.append({
                 "id": row.id,
                 "title": row.title or row.id,
@@ -49,6 +58,10 @@ def main() -> None:
                 "trending": int(row.trending_score or 0),
                 "license": row.license or "unknown",
                 "subdomain": row.subdomain,
+                "embed_url": embed.embed_url,
+                "embed_status": embed.status,
+                "web_component": embed.web_component,
+                "embed_reason": embed.reason,
                 "sha": row.sha,
                 "lastModified": row.last_modified_hf,
                 "models": row.models or [],

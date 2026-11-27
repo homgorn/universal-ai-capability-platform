@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import catalog from '../../data/catalog.json';
+
+const items: any[] = catalog as any[];
+const embeddable = items.filter((i) => i.embed_status === 'EMBEDDABLE' && i.embed_url);
+const verify = items.filter((i) => i.embed_status === 'VERIFY');
+const notEmbeddable = items.filter((i) => i.embed_status === 'NOT_EMBEDDABLE');
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'en' } }];
+}
+
+const base = 'https://uacp-site.rvcdax.workers.dev';
+const canonical = `${base}/embed/`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Embeddable HF Spaces',
+  url: canonical,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: embeddable.length,
+    itemListElement: embeddable.slice(0, 30).map((i, n) => ({
+      '@type': 'ListItem', position: n + 1, name: i.title, url: `${base}/space/${i.id}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  lang="en"
+  title="Embed HF Spaces — iframe and Web Component | Universal AI Capability Platform"
+  description={`Embed ${embeddable.length} public Hugging Face Spaces via iframe or gradio-app Web Component. ${verify.length} need runtime verification.`}
+  canonical={canonical}
+  extraJsonLd={[schema]}
+>
+  <nav><a href="/en/">Home</a> → <a href="/spaces/">Catalog</a> → Embed</nav>
+  <h1>Embed HF Spaces</h1>
+  <p>
+    <strong>{embeddable.length} Spaces</strong> are classified embeddable from measured catalog
+    fields. <strong>{verify.length}</strong> need live runtime verification and
+    <strong>{notEmbeddable.length}</strong> cannot be embedded. Iframes are one publication
+    channel; the canonical unit remains Capability + Contract.
+  </p>
+
+  <h2>How to embed</h2>
+  <table>
+    <thead><tr><th>Mode</th><th>Snippet</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td>Iframe</td><td><code>&lt;iframe src="https://SUBDOMAIN.hf.space"&gt;</code></td><td>Any public Space</td></tr>
+      <tr><td>Web Component</td><td><code>&lt;gradio-app src="https://SUBDOMAIN.hf.space"&gt;</code></td><td>Gradio Spaces</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Embeddable now ({embeddable.length})</h2>
+  <div class="grid">
+    {embeddable.slice(0, 40).map((item) => (
+      <article class="card">
+        <h3><a href={`/space/${item.id}/`}>{item.title}</a></h3>
+        <p class="summary">{item.summary}</p>
+        <p class="snippet">
+          {item.web_component
+            ? <code>&lt;gradio-app src="{item.embed_url}"&gt;&lt;/gradio-app&gt;</code>
+            : <code>&lt;iframe src="{item.embed_url}" loading="lazy"&gt;&lt;/iframe&gt;</code>}
+        </p>
+      </article>
+    ))}
+  </div>
+
+  <h2>Needs verification ({verify.length})</h2>
+  <p>
+    These Spaces have no resolvable subdomain or a non-running runtime stage in the catalog.
+    They are <strong>not</strong> claimed embeddable. Open the Space and confirm its live URL.
+  </p>
+  <details>
+    <summary>Show {verify.length} VERIFY Spaces</summary>
+    <ul>
+      {verify.slice(0, 80).map((item) => (
+        <li><a href={`/space/${item.id}/`}>{item.title}</a> — {item.embed_reason}</li>
+      ))}
+    </ul>
+  </details>
+</BaseLayout>
+
+<style>
+  nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+  .card { border: 1px solid #8886; border-radius: 8px; padding: 0.75rem 0.9rem; }
+  .card h3 { margin: 0 0 0.3rem; font-size: 1rem; }
+  .summary { font-size: 0.85rem; margin: 0.3rem 0; }
+  .snippet { font-size: 0.78rem; overflow-wrap: anywhere; }
+  th, td { border: 1px solid #8886; padding: 0.35rem 0.5rem; text-align: left; font-size: 0.88rem; }
+</style>

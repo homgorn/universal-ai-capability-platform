@@ -45,7 +45,8 @@ channel adapters before the catalog exists.
 ## Site structure (catalog interface)
 
 - `/spaces/` — faceted search: text, category, SDK, license, tags; sort by likes/trending/recency; URL state.
-- `/space/{id}/` — 501 entity pages with answer-first facts, visible questions, related Spaces, source link.
+- `/embed/` — iframe and `<gradio-app>` snippets for embeddable Spaces, with VERIFY separation.
+- `/space/{id}/` — 501 entity pages with answer-first facts, embed snippet, visible questions, related Spaces, source link.
 - `/categories/`, `/tags/`, `/sdk/` — indexable hubs with `CollectionPage + ItemList` and breadcrumbs.
 - `/api/items.json`, `/api/index.json`, `/api/stats.json`, `/api/corpus.jsonl`, `/.well-known/ai-catalog.json` — machine-readable catalog for agents.
 - `/llms.txt`, `/llms-full.txt`, `/docs/...` — human and LLM documentation.

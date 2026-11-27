@@ -466,6 +466,10 @@
           "href": "/spaces/"
         },
         {
+          "label": "Embed Spaces",
+          "href": "/embed/"
+        },
+        {
           "label": "JSON catalog",
           "href": "/api/items.json"
         },

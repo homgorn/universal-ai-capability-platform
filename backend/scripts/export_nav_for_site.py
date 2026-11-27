@@ -49,6 +49,7 @@ def main() -> None:
             {"title": "Trending", "links": [link(r["title"], f"/space/{r['id']}/") for r in top(7, lambda r: -r["trending"])]},
             {"title": "Catalog", "links": [
                 link("All Spaces", "/spaces/"),
+                link("Embed Spaces", "/embed/"),
                 link("JSON catalog", "/api/items.json"),
                 link("Stats", "/api/stats.json"),
                 link("Categories", "/categories/"),
