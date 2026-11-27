@@ -32,7 +32,7 @@ measured.
 
 1. **HF Catalog Crawler** — active now: cursor pagination, checkpoints, SHA-based updates, dead letters.
 2. **Gradio Contract Extractor** — implemented: `agents.md` + `/gradio_api/info` + MCP schema → canonical ports.
-3. **Evaluator** — schema validity, health, smoke tests, latency, output validity.
+3. **Evaluator** — implemented: deterministic, evidence-marked dimensions; unknown stays VERIFY.
 4. **Widget Runtime** — one stable host calling tools dynamically, not 100k third-party iframes.
 5. **Telegram Adapter** — bot commands + Mini App.
 6. **Planner** — goal + deployment intent → recipe.
