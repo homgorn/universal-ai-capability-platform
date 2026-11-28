@@ -1,0 +1,1 @@
+"""Widget layer: scoped tokens, channel constraints, mode runtime."""
